@@ -5,24 +5,21 @@ let pathname = '/plan';
 vi.mock('next/navigation', () => ({ usePathname: () => pathname }));
 
 describe('PageViewTracker', () => {
-  const beacon = vi.fn().mockReturnValue(true);
+  const fetchMock = vi.fn();
   beforeEach(() => {
-    beacon.mockClear();
-    Object.defineProperty(navigator, 'sendBeacon', { value: beacon, configurable: true, writable: true });
+    fetchMock.mockReset().mockResolvedValue(new Response(null, { status: 204 }));
+    vi.stubGlobal('fetch', fetchMock);
   });
+  afterEach(() => vi.unstubAllGlobals());
 
-  it('posts the pathname only (no query string) via sendBeacon', async () => {
+  it('posts the pathname only (no query string) with fetch keepalive', () => {
     pathname = '/trips';
     render(<PageViewTracker />);
-    expect(beacon).toHaveBeenCalledOnce();
-    const [url, blob] = beacon.mock.calls[0] as [string, Blob];
+    expect(fetchMock).toHaveBeenCalledOnce();
+    const [url, init] = fetchMock.mock.calls[0];
     expect(url).toBe('/api/v1/analytics/pageview');
-    const text = await new Promise<string>((resolve) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(String(reader.result));
-      reader.readAsText(blob);
-    });
-    expect(JSON.parse(text)).toEqual({ path: '/trips' });
+    expect(init).toMatchObject({ method: 'POST', keepalive: true, credentials: 'same-origin' });
+    expect(JSON.parse(init.body)).toEqual({ path: '/trips' });
   });
 
   it('re-fires when the pathname changes', () => {
@@ -30,20 +27,16 @@ describe('PageViewTracker', () => {
     const { rerender } = render(<PageViewTracker />);
     pathname = '/fares';
     rerender(<PageViewTracker />);
-    expect(beacon).toHaveBeenCalledTimes(2);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
   });
 
   it('skips /api paths', () => {
     sendPageView('/api/v1/health');
-    expect(beacon).not.toHaveBeenCalled();
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 
-  it('falls back to fetch keepalive when sendBeacon is unavailable', () => {
-    Object.defineProperty(navigator, 'sendBeacon', { value: undefined, configurable: true, writable: true });
-    const fetchMock = vi.fn().mockResolvedValue(new Response(null, { status: 204 }));
-    vi.stubGlobal('fetch', fetchMock);
-    sendPageView('/fares');
-    expect(fetchMock).toHaveBeenCalledWith('/api/v1/analytics/pageview', expect.objectContaining({ method: 'POST', keepalive: true }));
-    vi.unstubAllGlobals();
+  it('never throws when the request fails', () => {
+    fetchMock.mockRejectedValue(new Error('offline'));
+    expect(() => sendPageView('/fares')).not.toThrow();
   });
 });

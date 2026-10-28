@@ -1,5 +1,5 @@
 import { ConflictException, Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { FareMatrix, MatrixStatus, Role, VehicleType } from '@prisma/client';
+import { FareMatrix, MatrixStatus, Prisma, Role, VehicleType } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { PushService } from '../notifications/push.service';
 import { CreateFareMatrixDto, UpdateFareMatrixDto } from './dto';
@@ -81,41 +81,48 @@ export class FareMatricesService {
   }
 
   async publish(id: string) {
-    const label = { current: '' };
-    const published = await this.prisma.$transaction(async (tx) => {
-      const draft = await tx.fareMatrix.findUnique({ where: { id } });
-      if (!draft) throw new NotFoundException('Fare matrix not found');
-      if (draft.status !== 'DRAFT') {
-        throw new ConflictException('Only DRAFT fare matrices can be published');
+    let published: FareMatrix;
+    try {
+      // Archive + publish only. The partial unique index guarantees one PUBLISHED per type.
+      published = await this.prisma.$transaction(async (tx) => {
+        const draft = await tx.fareMatrix.findUnique({ where: { id } });
+        if (!draft) throw new NotFoundException('Fare matrix not found');
+        if (draft.status !== 'DRAFT') {
+          throw new ConflictException('Only DRAFT fare matrices can be published');
+        }
+        await tx.fareMatrix.updateMany({
+          where: { vehicleType: draft.vehicleType, status: 'PUBLISHED' },
+          data: { status: 'ARCHIVED' },
+        });
+        return tx.fareMatrix.update({
+          where: { id },
+          data: { status: 'PUBLISHED', publishedAt: new Date() },
+        });
+      });
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2002') {
+        throw new ConflictException('Another matrix was published for this vehicle type');
       }
-      await tx.fareMatrix.updateMany({
-        where: { vehicleType: draft.vehicleType, status: 'PUBLISHED' },
-        data: { status: 'ARCHIVED' },
-      });
-      const m = await tx.fareMatrix.update({
-        where: { id },
-        data: { status: 'PUBLISHED', publishedAt: new Date() },
-      });
-      const users = await tx.user.findMany({ select: { id: true } });
-      label.current = VEHICLE_LABELS[m.vehicleType];
-      await tx.notification.createMany({
-        data: users.map((u) => ({
-          userId: u.id,
-          title: 'Fare update',
-          body: `New ${label.current} fare matrix is now in effect.`,
-          url: '/',
-        })),
-      });
-      return m;
-    });
+      throw e;
+    }
 
-    // Only after commit; fire-and-forget. PushService never rejects, but guard anyway.
+    const title = 'Fare update';
+    const body = `New ${VEHICLE_LABELS[published.vehicleType]} fare matrix is now in effect.`;
+    const url = '/';
+
+    // After commit: one set-based insert for every user. Failures are logged, never thrown.
+    try {
+      await this.prisma.$executeRaw`
+        INSERT INTO "Notification" ("id", "userId", "title", "body", "url", "createdAt")
+        SELECT gen_random_uuid()::text, u."id", ${title}, ${body}, ${url}, now()
+        FROM "User" u`;
+    } catch (e) {
+      this.logger.error(`Failed to create notifications: ${(e as Error).message}`);
+    }
+
+    // Fire-and-forget push. PushService never rejects, but guard anyway.
     void this.push
-      .sendToAll({
-        title: 'Fare update',
-        body: `New ${label.current} fare matrix is now in effect.`,
-        url: '/',
-      })
+      .sendToAll({ title, body, url })
       .catch((e: unknown) =>
         this.logger.error(`Push after publish failed: ${(e as Error).message}`),
       );

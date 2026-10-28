@@ -25,6 +25,8 @@ jobs:
       - if: matrix.app == 'api'
         run: npx prisma generate
       - run: npm run lint
+      - if: matrix.app == 'web'
+        run: npm run typecheck
       - run: npm test -- --coverage
       - run: npm run build
 

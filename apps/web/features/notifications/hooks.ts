@@ -11,13 +11,14 @@ export function useNotifications() {
     queryKey: queryKeys.notifications.list,
     queryFn: notificationsApi.list,
     refetchInterval: NOTIFICATION_POLL_MS,
+    refetchIntervalInBackground: false,
   });
 }
 
 export function useMarkRead() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: notificationsApi.markRead,
+    mutationFn: (id: string) => notificationsApi.markRead(id),
     onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.notifications.all }),
   });
 }
@@ -25,7 +26,7 @@ export function useMarkRead() {
 export function useMarkAllRead() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: notificationsApi.markAllRead,
+    mutationFn: () => notificationsApi.markAllRead(),
     onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.notifications.all }),
   });
 }

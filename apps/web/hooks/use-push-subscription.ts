@@ -3,22 +3,11 @@
 import { useCallback, useEffect, useState } from 'react';
 import { notificationsApi } from '@/lib/api/endpoints';
 import { errorMessage } from '@/lib/api/errors';
+import { isPushSupported, sameServerKey, unsubscribePush, urlBase64ToUint8Array } from '@/lib/push';
+
+export { urlBase64ToUint8Array };
 
 export type PushStatus = 'loading' | 'unsupported' | 'denied' | 'subscribed' | 'unsubscribed';
-
-export function urlBase64ToUint8Array(base64: string): Uint8Array<ArrayBuffer> {
-  const padded = (base64 + '='.repeat((4 - (base64.length % 4)) % 4)).replace(/-/g, '+').replace(/_/g, '/');
-  const raw = atob(padded);
-  const out = new Uint8Array(new ArrayBuffer(raw.length));
-  for (let i = 0; i < raw.length; i++) out[i] = raw.charCodeAt(i);
-  return out;
-}
-
-const isSupported = () =>
-  typeof window !== 'undefined' &&
-  'serviceWorker' in navigator &&
-  'PushManager' in window &&
-  'Notification' in window;
 
 /** Registers /sw.js and manages the browser's Web Push subscription for this user. */
 export function usePushSubscription() {
@@ -29,7 +18,7 @@ export function usePushSubscription() {
   useEffect(() => {
     let cancelled = false;
     async function init() {
-      if (!isSupported()) return setStatus('unsupported');
+      if (!isPushSupported()) return setStatus('unsupported');
       if (Notification.permission === 'denied') return setStatus('denied');
       try {
         const reg = await navigator.serviceWorker.getRegistration('/');
@@ -47,7 +36,7 @@ export function usePushSubscription() {
 
   const subscribe = useCallback(async () => {
     setError(null);
-    if (!isSupported()) return setStatus('unsupported');
+    if (!isPushSupported()) return setStatus('unsupported');
     setBusy(true);
     try {
       const permission = await Notification.requestPermission();
@@ -58,12 +47,16 @@ export function usePushSubscription() {
       const reg = await navigator.serviceWorker.register('/sw.js', { scope: '/' });
       await navigator.serviceWorker.ready;
       const { publicKey } = await notificationsApi.publicKey();
-      const sub =
-        (await reg.pushManager.getSubscription()) ??
-        (await reg.pushManager.subscribe({
-          userVisibleOnly: true,
-          applicationServerKey: urlBase64ToUint8Array(publicKey),
-        }));
+      const serverKey = urlBase64ToUint8Array(publicKey);
+
+      let sub = await reg.pushManager.getSubscription();
+      // A subscription made under a different VAPID key can never receive our pushes: replace it.
+      if (sub && !sameServerKey(sub.options.applicationServerKey, serverKey)) {
+        await sub.unsubscribe().catch(() => undefined);
+        sub = null;
+      }
+      sub ??= await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: serverKey });
+
       const json = sub.toJSON();
       if (!json.endpoint || !json.keys?.p256dh || !json.keys.auth) throw new Error('Incomplete push subscription.');
       await notificationsApi.subscribe({
@@ -83,15 +76,8 @@ export function usePushSubscription() {
     setError(null);
     setBusy(true);
     try {
-      const reg = await navigator.serviceWorker.getRegistration('/');
-      const sub = await reg?.pushManager.getSubscription();
-      if (sub) {
-        await notificationsApi.unsubscribe(sub.endpoint);
-        await sub.unsubscribe();
-      }
+      await unsubscribePush();
       setStatus('unsubscribed');
-    } catch (err) {
-      setError(errorMessage(err, 'Could not disable push notifications.'));
     } finally {
       setBusy(false);
     }

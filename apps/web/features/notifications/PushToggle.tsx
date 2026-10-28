@@ -9,7 +9,7 @@ export function PushToggle() {
 
   let note = 'Get an alert on this device whenever fares are updated.';
   if (status === 'unsupported') note = 'This browser does not support push notifications. In-app alerts still work.';
-  if (status === 'denied') note = 'Notifications are blocked. Allow them in your browser site settings, then try again.';
+  if (status === 'denied') note = 'Notifications are blocked for this site. Enable notifications in your browser settings, then reload this page.';
 
   return (
     <Card accent="blue" title="Push notifications" actions={enabled ? <Badge tone="green">On</Badge> : <Badge>Off</Badge>}>

@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { NextRequest } from 'next/server';
-import { DELETE, GET, POST, dynamic } from '@/app/api/v1/[...path]/route';
+import { DELETE, GET, OPTIONS, POST, PUT, dynamic } from '@/app/api/v1/[...path]/route';
 
 const ctx = (...path: string[]) => ({ params: Promise.resolve({ path }) });
 
@@ -66,20 +66,31 @@ describe('API proxy route handler', () => {
     expect(res.headers.get('content-type')).toBe('application/json');
   });
 
-  it('sets X-Forwarded-For from the incoming x-forwarded-for, else x-real-ip', async () => {
+  it('forwards only the right-most x-forwarded-for entry (the trusted proxy hop)', async () => {
     fetchMock.mockResolvedValue(upstreamResponse(200));
     await GET(
-      new NextRequest('http://localhost:3000/api/v1/auth/me', { headers: { 'x-forwarded-for': '203.0.113.7' } }),
+      new NextRequest('http://localhost:3000/api/v1/auth/me', {
+        headers: { 'x-forwarded-for': '1.2.3.4, 6.6.6.6 ,203.0.113.7' },
+      }),
       ctx('auth', 'me'),
     );
     expect((fetchMock.mock.calls[0][1].headers as Headers).get('x-forwarded-for')).toBe('203.0.113.7');
+  });
 
+  it('sets no x-forwarded-for when none is present, and ignores x-real-ip', async () => {
     fetchMock.mockResolvedValue(upstreamResponse(200));
     await GET(
       new NextRequest('http://localhost:3000/api/v1/auth/me', { headers: { 'x-real-ip': '198.51.100.9' } }),
       ctx('auth', 'me'),
     );
-    expect((fetchMock.mock.calls[1][1].headers as Headers).get('x-forwarded-for')).toBe('198.51.100.9');
+    expect((fetchMock.mock.calls[0][1].headers as Headers).get('x-forwarded-for')).toBeNull();
+  });
+
+  it('exports PUT and OPTIONS handlers', async () => {
+    fetchMock.mockResolvedValue(upstreamResponse(200));
+    await PUT(new NextRequest('http://localhost:3000/api/v1/x', { method: 'PUT', body: '{}' }), ctx('x'));
+    await OPTIONS(new NextRequest('http://localhost:3000/api/v1/x', { method: 'OPTIONS' }), ctx('x'));
+    expect(fetchMock.mock.calls.map((c) => c[1].method)).toEqual(['PUT', 'OPTIONS']);
   });
 
   it('forwards the Origin header unchanged', async () => {
@@ -117,9 +128,26 @@ describe('API proxy route handler', () => {
     expect((await res.json()).message).toBe('Invalid email or password');
   });
 
-  it('answers 502 when the API is unreachable', async () => {
-    fetchMock.mockRejectedValue(new Error('ECONNREFUSED'));
-    const res = await GET(new NextRequest('http://localhost:3000/api/v1/health'), ctx('health'));
+  it('passes an abort signal (timeout) to fetch', async () => {
+    fetchMock.mockResolvedValue(upstreamResponse(200));
+    await GET(new NextRequest('http://localhost:3000/api/v1/health'), ctx('health'));
+    expect(fetchMock.mock.calls[0][1].signal).toBeInstanceOf(AbortSignal);
+  });
+
+  it('answers 502 when the API is unreachable and logs only the path', async () => {
+    const log = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    fetchMock.mockRejectedValue(new Error('ECONNREFUSED secret-host'));
+    const res = await GET(new NextRequest('http://localhost:3000/api/v1/health?token=abc'), ctx('health'));
     expect(res.status).toBe(502);
+    expect(log).toHaveBeenCalledWith('[proxy] upstream failure: /api/v1/health');
+    log.mockRestore();
+  });
+
+  it('answers 504 when the upstream times out', async () => {
+    const log = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    fetchMock.mockRejectedValue(new DOMException('The operation timed out', 'TimeoutError'));
+    const res = await GET(new NextRequest('http://localhost:3000/api/v1/health'), ctx('health'));
+    expect(res.status).toBe(504);
+    log.mockRestore();
   });
 });

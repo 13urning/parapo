@@ -41,14 +41,14 @@ export function AppShell({ children }: { children: ReactNode }) {
   const { user, isLoading, isUnauthenticated, logout } = useSession();
   const router = useRouter();
 
-  // A stale cookie passes middleware but the API says 401: clear it, then go to /login.
+  // A stale cookie passes middleware but the API says 401. The cookie is httpOnly, so ask the
+  // server to delete it; otherwise middleware would bounce /login straight back to /plan.
   useEffect(() => {
-    if (isUnauthenticated) {
-      void logout()
-        .catch(() => undefined)
-        .finally(() => router.replace('/login'));
-    }
-  }, [isUnauthenticated, logout, router]);
+    if (!isUnauthenticated) return;
+    void fetch('/api/session/clear', { method: 'POST', credentials: 'same-origin' })
+      .catch(() => undefined)
+      .finally(() => router.replace('/login?reason=expired'));
+  }, [isUnauthenticated, router]);
 
   const handleLogout = async () => {
     await logout().catch(() => undefined);

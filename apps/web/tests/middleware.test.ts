@@ -1,6 +1,8 @@
 // @vitest-environment node
+import { readdirSync, statSync } from 'node:fs';
+import { join } from 'node:path';
 import { NextRequest } from 'next/server';
-import { middleware } from '@/middleware';
+import { config, middleware } from '@/middleware';
 
 const b64url = (o: object) => Buffer.from(JSON.stringify(o)).toString('base64url');
 const jwt = (payload: object) => `${b64url({ alg: 'HS256', typ: 'JWT' })}.${b64url(payload)}.sig`;
@@ -13,6 +15,21 @@ function run(path: string, token?: string) {
   return middleware(req);
 }
 const location = (res: Response) => new URL(res.headers.get('location')!);
+
+/** Discover every page under app/(app) so a newly added route cannot silently be unguarded. */
+function appRoutes(dir = join(process.cwd(), 'app', '(app)'), prefix = ''): string[] {
+  const routes: string[] = [];
+  for (const name of readdirSync(dir)) {
+    const full = join(dir, name);
+    if (statSync(full).isDirectory()) {
+      const seg = name.startsWith('[') ? '123' : name;
+      routes.push(...appRoutes(full, `${prefix}/${seg}`));
+    } else if (name === 'page.tsx') {
+      routes.push(prefix || '/');
+    }
+  }
+  return routes;
+}
 
 describe('middleware', () => {
   it('redirects anonymous users to /login with the original path as next', () => {
@@ -53,8 +70,41 @@ describe('middleware', () => {
     expect(location(run('/register', token)).pathname).toBe('/plan');
   });
 
+  it('lets /login render for a stale cookie when reason=expired (breaks the redirect loop)', () => {
+    const token = jwt({ role: 'COMMUTER', exp: future });
+    expect(run('/login?reason=expired', token).headers.get('location')).toBeNull();
+  });
+
   it('lets anonymous users see /login and /register', () => {
     expect(run('/login').headers.get('location')).toBeNull();
     expect(run('/register').headers.get('location')).toBeNull();
   });
+
+  it('handles / explicitly (the page redirects by session)', () => {
+    expect(run('/').headers.get('location')).toBeNull();
+  });
+});
+
+describe('route guarding', () => {
+  const matcher = new RegExp(`^${config.matcher[0]}$`);
+
+  it('discovers the app routes', () => {
+    expect(appRoutes().length).toBeGreaterThanOrEqual(8);
+  });
+
+  it.each(appRoutes())('matcher covers and anonymous users are redirected from %s', (route) => {
+    expect(matcher.test(route)).toBe(true);
+    expect(location(run(route)).pathname).toBe('/login');
+  });
+
+  it.each(appRoutes().filter((r) => r.startsWith('/admin')))('non-admins are bounced from %s', (route) => {
+    expect(location(run(route, jwt({ role: 'COMMUTER', exp: future }))).pathname).toBe('/plan');
+  });
+
+  it.each(['/api/v1/trips', '/api/session/clear', '/_next/static/chunk.js', '/sw.js', '/icon.svg', '/favicon.ico'])(
+    'matcher excludes %s',
+    (path) => {
+      expect(matcher.test(path)).toBe(false);
+    },
+  );
 });

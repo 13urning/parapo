@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Badge, Button, ConfirmDialog, EmptyState, PageLoader, Pagination, StatCard } from '@/components/ui';
@@ -24,13 +24,19 @@ export function TripHistory() {
     queryFn: () => tripsApi.list(page, TRIPS_PAGE_SIZE),
     placeholderData: keepPreviousData,
   });
+  // If the refetched total no longer reaches this page (e.g. the last row was deleted), step back.
+  const total = trips.isPlaceholderData ? undefined : trips.data?.total;
+  useEffect(() => {
+    if (total === undefined) return;
+    const lastPage = Math.max(1, Math.ceil(total / TRIPS_PAGE_SIZE));
+    if (page > lastPage) setPage(lastPage);
+  }, [total, page]);
+
   const summary = useQuery({ queryKey: queryKeys.trips.summary, queryFn: tripsApi.summary });
 
   const remove = useMutation({
     mutationFn: (id: string) => tripsApi.remove(id),
     onSuccess: () => {
-      // Deleting the last row of a later page should step back rather than show an empty page.
-      if (trips.data && trips.data.items.length === 1 && page > 1) setPage(page - 1);
       void qc.invalidateQueries({ queryKey: queryKeys.trips.all });
       toast.success('Trip deleted.');
       setPending(null);

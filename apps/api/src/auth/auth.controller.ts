@@ -2,6 +2,7 @@ import { Body, Controller, Get, HttpCode, Post, Res, UseGuards } from '@nestjs/c
 import { Throttle } from '@nestjs/throttler';
 import type { CookieOptions, Response } from 'express';
 import { AppConfig } from '../config/app-config';
+import { AccountThrottlerGuard } from './account-throttler.guard';
 import { AuthService } from './auth.service';
 import { JwtPayload, SESSION_COOKIE, SESSION_TTL_SECONDS } from './auth.types';
 import { CurrentUser } from './current-user.decorator';
@@ -23,6 +24,7 @@ export class AuthController {
 
   @Post('register')
   @Throttle(STRICT)
+  @UseGuards(AccountThrottlerGuard)
   async register(@Body() dto: RegisterDto, @Res({ passthrough: true }) res: Response) {
     const { user, token } = await this.auth.register(dto);
     res.cookie(SESSION_COOKIE, token, {
@@ -35,6 +37,7 @@ export class AuthController {
   @Post('login')
   @HttpCode(200)
   @Throttle(STRICT)
+  @UseGuards(AccountThrottlerGuard)
   async login(@Body() dto: LoginDto, @Res({ passthrough: true }) res: Response) {
     const { user, token } = await this.auth.login(dto);
     res.cookie(SESSION_COOKIE, token, {

@@ -20,6 +20,8 @@ const HOP_BY_HOP = new Set([
   'content-encoding',
 ]);
 
+const UPSTREAM_TIMEOUT_MS = 15_000;
+
 type Ctx = { params: Promise<{ path: string[] }> };
 
 async function proxy(req: NextRequest, { params }: Ctx): Promise<Response> {
@@ -31,12 +33,14 @@ async function proxy(req: NextRequest, { params }: Ctx): Promise<Response> {
   const cookie = req.headers.get('cookie');
   const contentType = req.headers.get('content-type');
   const origin = req.headers.get('origin');
-  const clientIp = req.headers.get('x-forwarded-for') ?? req.headers.get('x-real-ip');
+  // Only the right-most entry is trustworthy: it is what our single trusted reverse proxy appended.
+  // Anything to its left is client-supplied and spoofable.
+  const clientIp = req.headers.get('x-forwarded-for')?.split(',').pop()?.trim();
   if (cookie) headers.set('cookie', cookie);
   if (contentType) headers.set('content-type', contentType);
   // The API checks Origin against WEB_ORIGIN on writes, so pass it through unchanged.
   if (origin) headers.set('origin', origin);
-  // Preserve the client IP so the API's per-IP login throttling is not shared by every user.
+  // Lets the API see a client IP instead of the web container's own address.
   if (clientIp) headers.set('x-forwarded-for', clientIp);
   headers.set('accept', req.headers.get('accept') ?? 'application/json');
 
@@ -49,9 +53,14 @@ async function proxy(req: NextRequest, { params }: Ctx): Promise<Response> {
       body: hasBody ? await req.arrayBuffer() : undefined,
       redirect: 'manual',
       cache: 'no-store',
+      signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS),
     });
-  } catch {
-    return Response.json({ statusCode: 502, message: 'API unavailable', error: 'Bad Gateway' }, { status: 502 });
+  } catch (err) {
+    const timedOut = err instanceof Error && (err.name === 'TimeoutError' || err.name === 'AbortError');
+    console.error(`[proxy] ${timedOut ? 'timeout' : 'upstream failure'}: /api/v1/${path.join('/')}`);
+    return timedOut
+      ? Response.json({ statusCode: 504, message: 'API timed out', error: 'Gateway Timeout' }, { status: 504 })
+      : Response.json({ statusCode: 502, message: 'API unavailable', error: 'Bad Gateway' }, { status: 502 });
   }
 
   const out = new Headers();
@@ -68,4 +77,6 @@ async function proxy(req: NextRequest, { params }: Ctx): Promise<Response> {
 export const GET = proxy;
 export const POST = proxy;
 export const PATCH = proxy;
+export const PUT = proxy;
 export const DELETE = proxy;
+export const OPTIONS = proxy;

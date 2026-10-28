@@ -11,5 +11,20 @@ export default defineConfig({
     setupFiles: ['./tests/setup.ts'],
     include: ['**/*.test.{ts,tsx}'],
     exclude: ['node_modules', '.next'],
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'lcov'],
+      include: ['app/**', 'components/**', 'features/**', 'hooks/**', 'lib/**', 'providers/**', 'middleware.ts'],
+      exclude: [
+        '**/*.test.{ts,tsx}',
+        'tests/**',
+        '**/*.config.*',
+        '**/*.d.ts',
+        '.next/**',
+        'public/**',
+        // Leaflet needs a real browser canvas; covered by manual/E2E checks.
+        'features/plan/TripMap.tsx',
+      ],
+    },
   },
 });

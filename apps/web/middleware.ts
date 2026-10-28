@@ -9,7 +9,10 @@ const PUBLIC_PATHS = ['/login', '/register'];
  * JWT role; the API remains the sole authority on every request.
  */
 export function middleware(req: NextRequest) {
-  const { pathname, search } = req.nextUrl;
+  const { pathname, search, searchParams } = req.nextUrl;
+  // `/` has no UI; app/page.tsx redirects by session.
+  if (pathname === '/') return NextResponse.next();
+
   const token = req.cookies.get(SESSION_COOKIE)?.value;
   const claims = decodeJwtPayload(token);
   const hasSession = !!token && !isExpired(claims);
@@ -23,7 +26,9 @@ export function middleware(req: NextRequest) {
   };
 
   if (PUBLIC_PATHS.includes(pathname)) {
-    return hasSession ? redirect('/plan') : NextResponse.next();
+    // reason=expired means the API rejected the cookie: let /login render so the loop breaks.
+    if (hasSession && searchParams.get('reason') !== 'expired') return redirect('/plan');
+    return NextResponse.next();
   }
 
   if (!hasSession) return redirect('/login', { next: `${pathname}${search}` });
@@ -35,13 +40,6 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    '/login',
-    '/register',
-    '/plan/:path*',
-    '/trips/:path*',
-    '/notifications/:path*',
-    '/fares/:path*',
-    '/admin/:path*',
-  ],
+  // Everything except the API, Next internals, the service worker, icons and any file with an extension.
+  matcher: ['/((?!api|_next|sw\\.js|icon\\.svg|favicon\\.ico|.*\\..*).*)'],
 };

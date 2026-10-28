@@ -45,6 +45,11 @@ export function LoginForm() {
       <p className="mt-1 text-ink-soft">Sign in to plan your next ride.</p>
 
       <form onSubmit={onSubmit} noValidate className="mt-6 space-y-4">
+        {params.get('reason') === 'expired' && !serverError && (
+          <p role="status" className="rounded-lg border border-jeep-yellow-dark/50 bg-jeep-yellow-soft px-3 py-2 text-sm font-medium text-[#6B4F00]">
+            Your session has expired. Please sign in again.
+          </p>
+        )}
         {serverError && (
           <p role="alert" className="rounded-lg border border-jeep-red/30 bg-jeep-red-soft px-3 py-2 text-sm font-medium text-jeep-red-dark">
             {serverError}

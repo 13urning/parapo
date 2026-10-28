@@ -6,6 +6,7 @@ import { authApi } from '@/lib/api/endpoints';
 import { ApiError } from '@/lib/api/errors';
 import { queryKeys } from '@/lib/api/keys';
 import type { FareCategory, User } from '@/lib/api/types';
+import { unsubscribePush } from '@/lib/push';
 
 export interface RegisterInput {
   name: string;
@@ -62,6 +63,8 @@ export function SessionProvider({ children }: { children: ReactNode }) {
 
   const logout = useCallback(async () => {
     try {
+      // Drop this browser's push subscription (browser + server) while we are still authenticated.
+      await unsubscribePush();
       await authApi.logout();
     } finally {
       qc.clear();

@@ -21,7 +21,7 @@ export class AnalyticsService {
         by: ['path'],
         where: { createdAt: { gte: since } },
         _count: { _all: true },
-        orderBy: { _count: { path: 'desc' } },
+        orderBy: [{ _count: { path: 'desc' } }, { path: 'asc' }],
         take: 100,
       }),
       this.prisma.$queryRaw<{ date: string; views: number }[]>`

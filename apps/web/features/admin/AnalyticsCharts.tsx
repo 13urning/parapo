@@ -49,7 +49,15 @@ export function AnalyticsCharts() {
             <BarChart data={byPath} layout="vertical" margin={{ left: 16, right: 16 }}>
               <CartesianGrid strokeDasharray="3 3" horizontal={false} />
               <XAxis type="number" allowDecimals={false} />
-              <YAxis type="category" dataKey="path" width={120} tick={{ fontSize: 12 }} />
+              <YAxis
+                type="category"
+                dataKey="path"
+                width={180}
+                interval={0}
+                tick={{ fontSize: 12 }}
+                // Long paths are truncated with an ellipsis; the tooltip shows the full path.
+                tickFormatter={(p: string) => (p.length > 28 ? `${p.slice(0, 27)}…` : p)}
+              />
               <Tooltip />
               <Bar dataKey="views" fill="#C8102E" radius={[0, 4, 4, 0]} />
             </BarChart>

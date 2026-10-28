@@ -1,6 +1,8 @@
 import { Global, Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
+import { ThrottlerModule } from '@nestjs/throttler';
 import { UsersModule } from '../users/users.module';
+import { AccountThrottlerGuard } from './account-throttler.guard';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './jwt-auth.guard';
@@ -9,9 +11,13 @@ import { TokenService } from './token.service';
 
 @Global()
 @Module({
-  imports: [JwtModule.register({}), UsersModule],
+  imports: [
+    JwtModule.register({}),
+    ThrottlerModule.forRoot([{ ttl: 60_000, limit: 100 }]),
+    UsersModule,
+  ],
   controllers: [AuthController],
-  providers: [AuthService, TokenService, JwtAuthGuard, RolesGuard],
+  providers: [AccountThrottlerGuard, AuthService, TokenService, JwtAuthGuard, RolesGuard],
   exports: [TokenService, JwtAuthGuard, RolesGuard, UsersModule],
 })
 export class AuthModule {}

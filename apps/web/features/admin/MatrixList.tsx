@@ -31,6 +31,8 @@ export function MatrixList() {
     },
     onSuccess: (kind) => {
       void qc.invalidateQueries({ queryKey: queryKeys.matrices.all });
+      // Publishing creates a notification for every user, so refresh the bell and list too.
+      if (kind === 'publish') void qc.invalidateQueries({ queryKey: queryKeys.notifications.all });
       toast.success(kind === 'publish' ? 'Fare matrix published. All users were notified.' : 'Draft deleted.');
       setAction(null);
     },
