@@ -19,6 +19,8 @@ export function safeNext(next: string | null | undefined, fallback = '/plan') {
   try {
     const url = new URL(next, 'http://x');
     if (url.origin !== 'http://x') return fallback;
+    // Dot-segment normalisation can produce a protocol-relative path (`/x/../..//evil` → `//evil`).
+    if (url.pathname.startsWith('//')) return fallback;
     if (url.pathname === '/login' || url.pathname === '/register') return fallback;
     return `${url.pathname}${url.search}${url.hash}`;
   } catch {
