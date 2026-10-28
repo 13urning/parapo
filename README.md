@@ -174,15 +174,22 @@ cd apps/web && npm install && npm run dev      # API_INTERNAL_URL defaults to ht
 
 - bcrypt password hashing (cost 12) and a generic login error with comparable timing (no
   account enumeration).
-- Rate limits on login and register (per account) plus a global limit.
-- Helmet security headers on the API and security headers plus a CSP (report-only) on the web
-  app.
+- 24-hour sessions; logout revokes the token server-side.
+- Rate limits on login and register: per account, plus a cap across all clients.
+- Helmet security headers on the API, and an enforced nonce-based Content Security Policy on
+  the web app.
+- Safe post-login redirects (same-origin paths only).
+- Push subscriptions are restricted to known browser push services, with at most 5 per user.
 - Server-side validation with whitelisting, owner-scoped queries (no IDOR), and an Origin check
   plus JSON-only bodies on writes.
 - Privacy (RA 10173): only the minimum personal data is collected, users can delete their trips,
   and page analytics store no IP address, user agent or query string.
 - The Postgres password in `docker-compose.yml` is a local-only development value. The database
-  port is not published.
+  and API ports are not published, and the web port is bound to `127.0.0.1`.
+- Demo accounts are seeded only when `SEED_DEMO_DATA=true` (set in `docker-compose.yml` for the
+  local demo).
+- Behind a trusted reverse proxy, set `TRUST_PROXY_HEADERS=true` on the web service so per-IP
+  limits use the real client IP.
 
 ## Nice-to-haves included
 

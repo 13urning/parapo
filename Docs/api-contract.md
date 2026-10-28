@@ -9,7 +9,7 @@ Shared contract between `apps/api` (NestJS, port 3001, internal only) and `apps/
 ## Conventions
 - JSON everywhere. Errors: `{ "statusCode": number, "message": string | string[], "error": string }`
   (Nest default). No stack traces.
-- Auth cookie: `parapo_session` — JWT (HS256, 7d), `httpOnly`, `SameSite=Lax`, `Path=/`,
+- Auth cookie: `parapo_session` — JWT (HS256, 24h, revocable via `tokenVersion` on logout), `httpOnly`, `SameSite=Lax`, `Path=/`,
   `Secure` when `COOKIE_SECURE=true` (default true when `NODE_ENV=production`; compose sets
   `false` because local runs over plain http). JWT payload: `{ sub, role, name }`.
 - Web middleware reads only the cookie's presence and decodes (not verifies) `role` for UX

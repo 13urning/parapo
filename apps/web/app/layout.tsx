@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
+import { headers } from 'next/headers';
 import './globals.css';
 import { Providers } from '@/providers';
 import { PageViewTracker } from '@/features/analytics/PageViewTracker';
@@ -12,9 +13,12 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = { themeColor: '#FFC20E', width: 'device-width', initialScale: 1 };
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default async function RootLayout({ children }: { children: ReactNode }) {
+  // Middleware issues a per-request CSP nonce. Reading request headers opts the tree into dynamic
+  // rendering, which is required for Next to stamp that nonce onto its framework scripts.
+  const nonce = (await headers()).get('x-nonce') ?? undefined;
   return (
-    <html lang="en">
+    <html lang="en" data-nonce={nonce ? 'set' : undefined}>
       <body>
         <a
           href="#main"

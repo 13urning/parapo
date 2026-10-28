@@ -1,4 +1,5 @@
-import { NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, NotFoundException } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { NotificationsService } from './notifications.service';
 
@@ -11,7 +12,10 @@ function setup() {
       updateMany: jest.fn().mockResolvedValue({ count: 1 }),
     },
     pushSubscription: {
-      upsert: jest.fn().mockResolvedValue({}),
+      findUnique: jest.fn().mockResolvedValue(null),
+      findMany: jest.fn().mockResolvedValue([]),
+      create: jest.fn().mockResolvedValue({}),
+      updateMany: jest.fn().mockResolvedValue({ count: 1 }),
       deleteMany: jest.fn().mockResolvedValue({ count: 1 }),
     },
   };
@@ -77,17 +81,109 @@ describe('NotificationsService', () => {
     });
   });
 
-  it('upserts subscriptions by endpoint bound to the caller; unsubscribe is owner-scoped', async () => {
-    const { prisma, service } = setup();
-    await service.subscribe('u1', 'https://push.test/e', 'p', 'a');
-    expect(prisma.pushSubscription.upsert).toHaveBeenCalledWith({
-      where: { endpoint: 'https://push.test/e' },
-      create: { userId: 'u1', endpoint: 'https://push.test/e', p256dh: 'p', auth: 'a' },
-      update: { userId: 'u1', p256dh: 'p', auth: 'a' },
+  describe('push subscriptions', () => {
+    const FCM = 'https://fcm.googleapis.com/fcm/send/abc';
+
+    it.each([
+      FCM,
+      'https://updates.push.services.mozilla.com/wpush/v2/x',
+      'https://db5p.notify.windows.com/w/?token=x',
+      'https://web.push.apple.com/QAbc',
+      'https://api.push.apple.com/3/device/x',
+    ])('accepts allow-listed host %s', async (endpoint) => {
+      const { prisma, service } = setup();
+      await service.subscribe('u1', endpoint, 'p', 'a');
+      expect(prisma.pushSubscription.create).toHaveBeenCalledWith({
+        data: { userId: 'u1', endpoint, p256dh: 'p', auth: 'a' },
+      });
     });
-    await service.unsubscribe('u1', 'https://push.test/e');
-    expect(prisma.pushSubscription.deleteMany).toHaveBeenCalledWith({
-      where: { endpoint: 'https://push.test/e', userId: 'u1' },
+
+    it.each([
+      'http://fcm.googleapis.com/x',
+      'https://evil.example.com/x',
+      'https://fcm.googleapis.com.evil.test/x',
+      'https://evilpush.apple.com.attacker.io/x',
+      'https://notify.windows.com.evil.test/x',
+      'https://user:pw@fcm.googleapis.com/x',
+      'https://127.0.0.1/x',
+      'not a url',
+    ])('rejects %s with 400', async (endpoint) => {
+      const { prisma, service } = setup();
+      await expect(service.subscribe('u1', endpoint, 'p', 'a')).rejects.toBeInstanceOf(
+        BadRequestException,
+      );
+      expect(prisma.pushSubscription.create).not.toHaveBeenCalled();
+    });
+
+    it('returns 409 and leaves the row untouched when the endpoint belongs to another user', async () => {
+      const { prisma, service } = setup();
+      prisma.pushSubscription.findUnique.mockResolvedValue({
+        id: 's1',
+        userId: 'other',
+        endpoint: FCM,
+      });
+      await expect(service.subscribe('u1', FCM, 'p', 'a')).rejects.toBeInstanceOf(
+        ConflictException,
+      );
+      expect(prisma.pushSubscription.create).not.toHaveBeenCalled();
+      expect(prisma.pushSubscription.updateMany).not.toHaveBeenCalled();
+      expect(prisma.pushSubscription.deleteMany).not.toHaveBeenCalled();
+    });
+
+    it('maps a create race (P2002) to 409', async () => {
+      const { prisma, service } = setup();
+      prisma.pushSubscription.create.mockRejectedValue(
+        new Prisma.PrismaClientKnownRequestError('dup', { code: 'P2002', clientVersion: 'test' }),
+      );
+      await expect(service.subscribe('u1', FCM, 'p', 'a')).rejects.toBeInstanceOf(
+        ConflictException,
+      );
+    });
+
+    it("updates the keys when the endpoint is the caller's own", async () => {
+      const { prisma, service } = setup();
+      prisma.pushSubscription.findUnique.mockResolvedValue({
+        id: 's1',
+        userId: 'u1',
+        endpoint: FCM,
+      });
+      await service.subscribe('u1', FCM, 'newp', 'newa');
+      expect(prisma.pushSubscription.updateMany).toHaveBeenCalledWith({
+        where: { id: 's1', userId: 'u1' },
+        data: { p256dh: 'newp', auth: 'newa' },
+      });
+      expect(prisma.pushSubscription.create).not.toHaveBeenCalled();
+    });
+
+    it('keeps at most 5 subscriptions per user, removing the oldest', async () => {
+      const { prisma, service } = setup();
+      prisma.pushSubscription.findMany.mockResolvedValue(
+        ['s1', 's2', 's3', 's4', 's5', 's6', 's7'].map((id) => ({ id })),
+      );
+      await service.subscribe('u1', FCM, 'p', 'a');
+      expect(prisma.pushSubscription.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { userId: 'u1' }, orderBy: { createdAt: 'asc' } }),
+      );
+      expect(prisma.pushSubscription.deleteMany).toHaveBeenCalledWith({
+        where: { userId: 'u1', id: { in: ['s1', 's2'] } },
+      });
+    });
+
+    it('does not prune when at or under the cap', async () => {
+      const { prisma, service } = setup();
+      prisma.pushSubscription.findMany.mockResolvedValue(
+        ['s1', 's2', 's3', 's4', 's5'].map((id) => ({ id })),
+      );
+      await service.subscribe('u1', FCM, 'p', 'a');
+      expect(prisma.pushSubscription.deleteMany).not.toHaveBeenCalled();
+    });
+
+    it('unsubscribe is owner-scoped', async () => {
+      const { prisma, service } = setup();
+      await service.unsubscribe('u1', FCM);
+      expect(prisma.pushSubscription.deleteMany).toHaveBeenCalledWith({
+        where: { endpoint: FCM, userId: 'u1' },
+      });
     });
   });
 });

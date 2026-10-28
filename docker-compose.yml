@@ -31,6 +31,8 @@ services:
       # Local runs are plain http; set to true behind TLS.
       COOKIE_SECURE: "false"
       VAPID_SUBJECT: mailto:admin@parapo.local
+      # Seeds the demo accounts and fare matrices from the README. Local demo only.
+      SEED_DEMO_DATA: "true"
       # JWT_SECRET / VAPID keys are generated on first boot and persisted in the DB
       # unless provided here.
     healthcheck:
@@ -51,7 +53,7 @@ services:
       NODE_ENV: production
       API_INTERNAL_URL: http://api:3001
     ports:
-      - "3000:3000"
+      - "127.0.0.1:3000:3000"
 
 volumes:
   pgdata:

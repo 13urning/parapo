@@ -11,9 +11,9 @@ function setup(secret = SECRET) {
 }
 
 describe('TokenService', () => {
-  it('signs a token carrying sub, role and name with a 7 day expiry', async () => {
+  it('signs a token carrying sub, role, name and ver with a 24 hour expiry', async () => {
     const { jwt, service } = setup();
-    const token = await service.sign({ sub: 'u1', role: 'ADMIN', name: 'Ann' });
+    const token = await service.sign({ sub: 'u1', role: 'ADMIN', name: 'Ann', ver: 2 });
     const decoded = jwt.decode(token) as {
       sub: string;
       role: string;
@@ -21,16 +21,27 @@ describe('TokenService', () => {
       exp: number;
       iat: number;
     };
-    expect(decoded).toEqual(expect.objectContaining({ sub: 'u1', role: 'ADMIN', name: 'Ann' }));
-    expect(decoded.exp - decoded.iat).toBe(7 * 24 * 60 * 60);
+    expect(decoded).toEqual(
+      expect.objectContaining({ sub: 'u1', role: 'ADMIN', name: 'Ann', ver: 2 }),
+    );
+    expect(decoded.exp - decoded.iat).toBe(24 * 60 * 60);
   });
 
   it('verifies a valid token', async () => {
     const { service } = setup();
-    const token = await service.sign({ sub: 'u1', role: 'COMMUTER', name: 'Juan' });
+    const token = await service.sign({ sub: 'u1', role: 'COMMUTER', name: 'Juan', ver: 0 });
     expect(await service.verify(token)).toEqual(
       expect.objectContaining({ sub: 'u1', role: 'COMMUTER', name: 'Juan' }),
     );
+  });
+
+  it('rejects a validly signed token that has no integer ver', async () => {
+    const { jwt, service } = setup();
+    const legacy = await jwt.signAsync(
+      { sub: 'u1', role: 'ADMIN', name: 'x' },
+      { secret: SECRET, expiresIn: 60 },
+    );
+    expect(await service.verify(legacy)).toBeNull();
   });
 
   it('returns null (never throws) for missing, malformed, wrong-secret, alg=none and expired tokens', async () => {
@@ -40,7 +51,7 @@ describe('TokenService', () => {
     expect(await service.verify('garbage')).toBeNull();
 
     const other = setup('another-secret');
-    const foreign = await other.service.sign({ sub: 'u1', role: 'ADMIN', name: 'x' });
+    const foreign = await other.service.sign({ sub: 'u1', role: 'ADMIN', name: 'x', ver: 0 });
     expect(await service.verify(foreign)).toBeNull();
 
     const b64 = (o: object) => Buffer.from(JSON.stringify(o)).toString('base64url');

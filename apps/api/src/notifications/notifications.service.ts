@@ -1,5 +1,34 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
+
+export const MAX_SUBSCRIPTIONS_PER_USER = 5;
+
+/** Browser push services we accept. Anything else is rejected to avoid server-side requests to arbitrary hosts. */
+const ALLOWED_HOSTS: (string | RegExp)[] = [
+  'fcm.googleapis.com',
+  /^[a-z0-9-]+(\.[a-z0-9-]+)*\.push\.services\.mozilla\.com$/,
+  /^[a-z0-9-]+(\.[a-z0-9-]+)*\.notify\.windows\.com$/,
+  'web.push.apple.com',
+  /^[a-z0-9-]+(\.[a-z0-9-]+)*\.push\.apple\.com$/,
+];
+
+export function isAllowedPushEndpoint(endpoint: string): boolean {
+  let url: URL;
+  try {
+    url = new URL(endpoint);
+  } catch {
+    return false;
+  }
+  if (url.protocol !== 'https:' || url.username || url.password) return false;
+  const host = url.hostname.toLowerCase();
+  return ALLOWED_HOSTS.some((h) => (typeof h === 'string' ? h === host : h.test(host)));
+}
 
 @Injectable()
 export class NotificationsService {
@@ -45,12 +74,46 @@ export class NotificationsService {
   }
 
   async subscribe(userId: string, endpoint: string, p256dh: string, auth: string): Promise<void> {
-    // Upsert by endpoint; re-subscribing from the same browser rebinds it to the current user.
-    await this.prisma.pushSubscription.upsert({
-      where: { endpoint },
-      create: { userId, endpoint, p256dh, auth },
-      update: { userId, p256dh, auth },
+    if (!isAllowedPushEndpoint(endpoint)) {
+      throw new BadRequestException('Unsupported push endpoint');
+    }
+    const existing = await this.prisma.pushSubscription.findUnique({ where: { endpoint } });
+    if (existing && existing.userId !== userId) {
+      // Never rebind an endpoint that belongs to another account.
+      throw new ConflictException('Push endpoint is already registered');
+    }
+    if (existing) {
+      await this.prisma.pushSubscription.updateMany({
+        where: { id: existing.id, userId },
+        data: { p256dh, auth },
+      });
+    } else {
+      try {
+        await this.prisma.pushSubscription.create({ data: { userId, endpoint, p256dh, auth } });
+      } catch (e) {
+        // Lost a race with another account registering the same endpoint.
+        if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2002') {
+          throw new ConflictException('Push endpoint is already registered');
+        }
+        throw e;
+      }
+    }
+    await this.enforceLimit(userId);
+  }
+
+  /** Keeps at most MAX_SUBSCRIPTIONS_PER_USER per user, deleting the oldest first. */
+  private async enforceLimit(userId: string): Promise<void> {
+    const subs = await this.prisma.pushSubscription.findMany({
+      where: { userId },
+      orderBy: { createdAt: 'asc' },
+      select: { id: true },
     });
+    const excess = subs.length - MAX_SUBSCRIPTIONS_PER_USER;
+    if (excess > 0) {
+      await this.prisma.pushSubscription.deleteMany({
+        where: { userId, id: { in: subs.slice(0, excess).map((x) => x.id) } },
+      });
+    }
   }
 
   async unsubscribe(userId: string, endpoint: string): Promise<void> {

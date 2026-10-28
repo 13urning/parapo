@@ -2,6 +2,7 @@
 import { readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { NextRequest } from 'next/server';
+import { buildCsp } from '@/lib/csp';
 import { config, middleware } from '@/middleware';
 
 const b64url = (o: object) => Buffer.from(JSON.stringify(o)).toString('base64url');
@@ -82,6 +83,49 @@ describe('middleware', () => {
 
   it('handles / explicitly (the page redirects by session)', () => {
     expect(run('/').headers.get('location')).toBeNull();
+  });
+});
+
+describe('Content-Security-Policy', () => {
+  const csp = (res: Response) => res.headers.get('content-security-policy')!;
+  beforeEach(() => vi.stubEnv('NODE_ENV', 'production'));
+  afterEach(() => vi.unstubAllEnvs());
+
+  it('allows unsafe-eval only in development', () => {
+    expect(buildCsp('n', true)).toContain("'unsafe-eval'");
+    expect(buildCsp('n', false)).not.toContain("'unsafe-eval'");
+  });
+
+  it('enforces (not report-only) a nonce-based CSP on page responses', () => {
+    const res = run('/login');
+    expect(res.headers.get('content-security-policy-report-only')).toBeNull();
+    const policy = csp(res);
+    expect(policy).toMatch(/script-src 'self' 'nonce-[A-Za-z0-9+/=]+' 'strict-dynamic'/);
+    expect(policy).toContain("object-src 'none'");
+    expect(policy).toContain("frame-ancestors 'none'");
+    expect(policy).toContain("base-uri 'self'");
+    expect(policy).toContain("form-action 'self'");
+    expect(policy).toContain("connect-src 'self'");
+    expect(policy).toContain('img-src');
+    expect(policy).toContain('https://*.tile.openstreetmap.org');
+    expect(policy).not.toContain("'unsafe-eval'");
+  });
+
+  it('uses a fresh nonce for every request', () => {
+    const nonce = (r: Response) => csp(r).match(/'nonce-([^']+)'/)![1];
+    expect(nonce(run('/login'))).not.toBe(nonce(run('/login')));
+  });
+
+  it('forwards the nonce to the app via request headers', () => {
+    const res = run('/login');
+    const nonce = csp(res).match(/'nonce-([^']+)'/)![1];
+    expect(res.headers.get('x-middleware-request-x-nonce')).toBe(nonce);
+    expect(res.headers.get('x-middleware-request-content-security-policy')).toBe(csp(res));
+  });
+
+  it('also sets the CSP on redirects and on /', () => {
+    expect(csp(run('/trips'))).toContain('nonce-');
+    expect(csp(run('/'))).toContain('nonce-');
   });
 });
 

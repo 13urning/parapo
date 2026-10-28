@@ -1,17 +1,35 @@
 import { NextResponse, type NextRequest } from 'next/server';
+import { buildCsp, makeNonce } from '@/lib/csp';
 import { decodeJwtPayload, isExpired } from '@/lib/jwt';
 
 const SESSION_COOKIE = 'parapo_session';
 const PUBLIC_PATHS = ['/login', '/register'];
 
 /**
- * UX-level route guard. It checks cookie presence and decodes (never verifies) the
- * JWT role; the API remains the sole authority on every request.
+ * 1. Sets an enforced, nonce-based Content-Security-Policy on every page response.
+ * 2. UX-level route guard: checks cookie presence and decodes (never verifies) the JWT role;
+ *    the API remains the sole authority on every request.
  */
 export function middleware(req: NextRequest) {
+  const nonce = makeNonce();
+  const csp = buildCsp(nonce);
+
+  // Next reads the nonce from the request CSP header and applies it to its own scripts.
+  const requestHeaders = new Headers(req.headers);
+  requestHeaders.set('x-nonce', nonce);
+  requestHeaders.set('Content-Security-Policy', csp);
+
+  const res = guard(req, requestHeaders);
+  res.headers.set('Content-Security-Policy', csp);
+  return res;
+}
+
+function guard(req: NextRequest, requestHeaders: Headers): NextResponse {
   const { pathname, search, searchParams } = req.nextUrl;
+  const pass = () => NextResponse.next({ request: { headers: requestHeaders } });
+
   // `/` has no UI; app/page.tsx redirects by session.
-  if (pathname === '/') return NextResponse.next();
+  if (pathname === '/') return pass();
 
   const token = req.cookies.get(SESSION_COOKIE)?.value;
   const claims = decodeJwtPayload(token);
@@ -28,7 +46,7 @@ export function middleware(req: NextRequest) {
   if (PUBLIC_PATHS.includes(pathname)) {
     // reason=expired means the API rejected the cookie: let /login render so the loop breaks.
     if (hasSession && searchParams.get('reason') !== 'expired') return redirect('/plan');
-    return NextResponse.next();
+    return pass();
   }
 
   if (!hasSession) return redirect('/login', { next: `${pathname}${search}` });
@@ -36,7 +54,7 @@ export function middleware(req: NextRequest) {
   if ((pathname === '/admin' || pathname.startsWith('/admin/')) && claims?.role !== 'ADMIN') {
     return redirect('/plan');
   }
-  return NextResponse.next();
+  return pass();
 }
 
 export const config = {

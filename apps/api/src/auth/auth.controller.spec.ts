@@ -1,4 +1,4 @@
-import type { Response } from 'express';
+import type { Request, Response } from 'express';
 import { AppConfig } from '../config/app-config';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
@@ -6,6 +6,7 @@ import { AuthService } from './auth.service';
 function setup(cookieSecure: boolean) {
   const auth = {
     register: jest.fn().mockResolvedValue({ user: { id: 'u1' }, token: 'tok' }),
+    logout: jest.fn().mockResolvedValue(undefined),
     login: jest.fn().mockResolvedValue({ user: { id: 'u1' }, token: 'tok' }),
   };
   const controller = new AuthController(
@@ -13,7 +14,7 @@ function setup(cookieSecure: boolean) {
     { cookieSecure } as AppConfig,
   );
   const res = { cookie: jest.fn(), clearCookie: jest.fn() };
-  return { controller, res: res as unknown as Response, mocks: res };
+  return { controller, auth, res: res as unknown as Response, mocks: res };
 }
 
 describe('AuthController session cookie', () => {
@@ -31,7 +32,7 @@ describe('AuthController session cookie', () => {
           sameSite: 'lax',
           path: '/',
           secure,
-          maxAge: 7 * 24 * 60 * 60 * 1000,
+          maxAge: 24 * 60 * 60 * 1000,
         }),
       );
     },
@@ -48,9 +49,11 @@ describe('AuthController session cookie', () => {
     );
   });
 
-  it('logout clears the cookie with matching attributes', () => {
-    const { controller, res, mocks } = setup(true);
-    controller.logout(res);
+  it('logout revokes the session server-side and clears the cookie with matching attributes', async () => {
+    const { controller, auth, res, mocks } = setup(true);
+    const req = { cookies: { parapo_session: 'the-token' } } as unknown as Request;
+    await controller.logout(req, res);
+    expect(auth.logout).toHaveBeenCalledWith('the-token');
     expect(mocks.clearCookie).toHaveBeenCalledWith(
       'parapo_session',
       expect.objectContaining({ httpOnly: true, sameSite: 'lax', path: '/', secure: true }),

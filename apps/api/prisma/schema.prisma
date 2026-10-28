@@ -38,6 +38,7 @@ model User {
   passwordHash  String
   role          Role               @default(COMMUTER)
   fareCategory  FareCategory       @default(REGULAR)
+  tokenVersion  Int                @default(0)
   createdAt     DateTime           @default(now())
   trips         Trip[]
   notifications Notification[]

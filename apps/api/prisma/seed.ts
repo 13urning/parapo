@@ -73,6 +73,11 @@ const trips = [
 ] as const;
 
 async function main(): Promise<void> {
+  // Demo accounts/data are opt-in: never create known credentials unless explicitly requested.
+  if (process.env.SEED_DEMO_DATA !== 'true') {
+    console.log('SEED_DEMO_DATA is not "true"; skipping demo seed.');
+    return;
+  }
   // update: {} everywhere so re-running never overwrites changed passwords or edited data.
   await prisma.user.upsert({
     where: { email: 'admin@parapo.local' },

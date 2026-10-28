@@ -30,7 +30,7 @@ export class AnalyticsController {
 
   @Post('pageview')
   @HttpCode(204)
-  @Throttle({ default: { limit: 120, ttl: 60_000 } })
+  @Throttle({ default: { limit: 600, ttl: 60_000 } })
   async pageview(@Body() dto: PageviewDto, @Req() req: Request): Promise<void> {
     // Lenient: an invalid/expired/missing cookie simply means an anonymous view.
     const cookies = req.cookies as Record<string, string | undefined> | undefined;

@@ -66,24 +66,46 @@ describe('API proxy route handler', () => {
     expect(res.headers.get('content-type')).toBe('application/json');
   });
 
-  it('forwards only the right-most x-forwarded-for entry (the trusted proxy hop)', async () => {
+  it('sends no x-forwarded-for by default, even if the client supplied one', async () => {
     fetchMock.mockResolvedValue(upstreamResponse(200));
     await GET(
       new NextRequest('http://localhost:3000/api/v1/auth/me', {
-        headers: { 'x-forwarded-for': '1.2.3.4, 6.6.6.6 ,203.0.113.7' },
+        headers: { 'x-forwarded-for': '6.6.6.6', 'x-real-ip': '198.51.100.9' },
       }),
       ctx('auth', 'me'),
     );
-    expect((fetchMock.mock.calls[0][1].headers as Headers).get('x-forwarded-for')).toBe('203.0.113.7');
+    const sent = fetchMock.mock.calls[0][1].headers as Headers;
+    expect(sent.get('x-forwarded-for')).toBeNull();
+    expect(sent.get('x-real-ip')).toBeNull();
   });
 
-  it('sets no x-forwarded-for when none is present, and ignores x-real-ip', async () => {
-    fetchMock.mockResolvedValue(upstreamResponse(200));
-    await GET(
-      new NextRequest('http://localhost:3000/api/v1/auth/me', { headers: { 'x-real-ip': '198.51.100.9' } }),
-      ctx('auth', 'me'),
-    );
-    expect((fetchMock.mock.calls[0][1].headers as Headers).get('x-forwarded-for')).toBeNull();
+  describe('with TRUST_PROXY_HEADERS=true', () => {
+    beforeEach(() => {
+      process.env.TRUST_PROXY_HEADERS = 'true';
+    });
+    afterEach(() => {
+      delete process.env.TRUST_PROXY_HEADERS;
+    });
+
+    it('forwards only the right-most x-forwarded-for entry (the trusted proxy hop)', async () => {
+      fetchMock.mockResolvedValue(upstreamResponse(200));
+      await GET(
+        new NextRequest('http://localhost:3000/api/v1/auth/me', {
+          headers: { 'x-forwarded-for': '1.2.3.4, 6.6.6.6 ,203.0.113.7' },
+        }),
+        ctx('auth', 'me'),
+      );
+      expect((fetchMock.mock.calls[0][1].headers as Headers).get('x-forwarded-for')).toBe('203.0.113.7');
+    });
+
+    it('still ignores x-real-ip and sends nothing when no xff is present', async () => {
+      fetchMock.mockResolvedValue(upstreamResponse(200));
+      await GET(
+        new NextRequest('http://localhost:3000/api/v1/auth/me', { headers: { 'x-real-ip': '198.51.100.9' } }),
+        ctx('auth', 'me'),
+      );
+      expect((fetchMock.mock.calls[0][1].headers as Headers).get('x-forwarded-for')).toBeNull();
+    });
   });
 
   it('exports PUT and OPTIONS handlers', async () => {

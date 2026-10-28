@@ -18,7 +18,8 @@ import { UsersModule } from './users/users.module';
   imports: [
     ConfigModule,
     PrismaModule,
-    ThrottlerModule.forRoot([{ ttl: 60_000, limit: 100 }]),
+    // Default per-IP limit. All browsers reach the API via the single web-proxy IP, so keep it generous.
+    ThrottlerModule.forRoot([{ ttl: 60_000, limit: 300 }]),
     UsersModule,
     AuthModule,
     PlacesModule,

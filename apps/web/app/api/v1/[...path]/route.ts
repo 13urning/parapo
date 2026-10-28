@@ -33,14 +33,15 @@ async function proxy(req: NextRequest, { params }: Ctx): Promise<Response> {
   const cookie = req.headers.get('cookie');
   const contentType = req.headers.get('content-type');
   const origin = req.headers.get('origin');
-  // Only the right-most entry is trustworthy: it is what our single trusted reverse proxy appended.
-  // Anything to its left is client-supplied and spoofable.
-  const clientIp = req.headers.get('x-forwarded-for')?.split(',').pop()?.trim();
+  // Inbound XFF / X-Real-IP are client-controlled, so they are dropped unless the operator states that
+  // a single trusted reverse proxy sits in front (TRUST_PROXY_HEADERS=true). Then only the right-most
+  // entry, the one that proxy appended, is used.
+  const trustProxy = process.env.TRUST_PROXY_HEADERS === 'true';
+  const clientIp = trustProxy ? req.headers.get('x-forwarded-for')?.split(',').pop()?.trim() : undefined;
   if (cookie) headers.set('cookie', cookie);
   if (contentType) headers.set('content-type', contentType);
   // The API checks Origin against WEB_ORIGIN on writes, so pass it through unchanged.
   if (origin) headers.set('origin', origin);
-  // Lets the API see a client IP instead of the web container's own address.
   if (clientIp) headers.set('x-forwarded-for', clientIp);
   headers.set('accept', req.headers.get('accept') ?? 'application/json');
 

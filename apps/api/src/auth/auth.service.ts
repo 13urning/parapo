@@ -66,13 +66,24 @@ export class AuthService {
     return toPublicUser(user);
   }
 
+  /** Server-side logout: bumps tokenVersion so every outstanding token stops working. */
+  async logout(token: string | undefined): Promise<void> {
+    const payload = await this.tokens.verify(token);
+    if (payload) await this.users.revokeSessions(payload.sub, payload.ver);
+  }
+
   private getDummyHash(): Promise<string> {
     this.dummyHash ??= bcrypt.hash('parapo-dummy-password', BCRYPT_COST);
     return this.dummyHash;
   }
 
   private async issue(user: User): Promise<AuthResult> {
-    const token = await this.tokens.sign({ sub: user.id, role: user.role, name: user.name });
+    const token = await this.tokens.sign({
+      sub: user.id,
+      role: user.role,
+      name: user.name,
+      ver: user.tokenVersion,
+    });
     return { user: toPublicUser(user), token };
   }
 }

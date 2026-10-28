@@ -12,7 +12,7 @@ export class TokenService {
 
   async sign(payload: JwtPayload): Promise<string> {
     return this.jwt.signAsync(
-      { sub: payload.sub, role: payload.role, name: payload.name },
+      { sub: payload.sub, role: payload.role, name: payload.name, ver: payload.ver },
       {
         secret: await this.secrets.getJwtSecret(),
         algorithm: 'HS256',
@@ -29,7 +29,7 @@ export class TokenService {
         secret: await this.secrets.getJwtSecret(),
         algorithms: ['HS256'],
       });
-      return typeof p.sub === 'string' ? p : null;
+      return typeof p.sub === 'string' && Number.isInteger(p.ver) ? p : null;
     } catch {
       return null;
     }

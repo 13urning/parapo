@@ -18,6 +18,7 @@ describe('AuthService', () => {
     name: 'Juan',
     email: 'juan@parapo.local',
     role: 'COMMUTER',
+    tokenVersion: 3,
     fareCategory: 'STUDENT',
     createdAt: new Date(),
   };
@@ -83,7 +84,12 @@ describe('AuthService', () => {
       const res = await service.login({ email: 'juan@parapo.local', password: 'Commuter#2026' });
       expect(res.user.email).toBe('juan@parapo.local');
       expect(res.user).not.toHaveProperty('passwordHash');
-      expect(tokens.sign).toHaveBeenCalledWith({ sub: 'u1', role: 'COMMUTER', name: 'Juan' });
+      expect(tokens.sign).toHaveBeenCalledWith({
+        sub: 'u1',
+        role: 'COMMUTER',
+        name: 'Juan',
+        ver: 3,
+      });
     });
 
     it('gives the same 401 message for wrong password and unknown email (no enumeration)', async () => {
