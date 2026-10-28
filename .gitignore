@@ -7,3 +7,10 @@ coverage/
 !.env.example
 *.log
 .turbo/
+Docs/documents/
+
+# Local-only design-doc tooling and outputs (not part of the submission)
+Docs/scripts/
+Docs/diagrams/
+Docs/package.json
+Docs/package-lock.json

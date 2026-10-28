@@ -1,0 +1,57 @@
+name: parapo
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: parapo
+      POSTGRES_PASSWORD: parapo_local_only
+      POSTGRES_DB: parapo
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U parapo -d parapo"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    # No published port: the database is only reachable on the internal compose network.
+
+  api:
+    build: ./apps/api
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      DATABASE_URL: postgresql://parapo:parapo_local_only@db:5432/parapo?schema=public
+      WEB_ORIGIN: http://localhost:3000
+      # Local runs are plain http; set to true behind TLS.
+      COOKIE_SECURE: "false"
+      VAPID_SUBJECT: mailto:admin@parapo.local
+      # JWT_SECRET / VAPID keys are generated on first boot and persisted in the DB
+      # unless provided here.
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3001/api/v1/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    # Not published: the browser reaches the API through the web app's /api/v1 proxy.
+
+  web:
+    build: ./apps/web
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      API_INTERNAL_URL: http://api:3001
+    ports:
+      - "3000:3000"
+
+volumes:
+  pgdata:

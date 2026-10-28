@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-paper font-sans text-ink antialiased;
+  }
+  :focus-visible {
+    outline-color: #1d4e89;
+  }
+}
+
+@layer components {
+  /* Jeepney side-panel stripe: yellow / red / blue. */
+  .livery-stripe {
+    background-image: linear-gradient(
+      to bottom,
+      #ffc20e 0 50%,
+      #c8102e 50% 75%,
+      #1d4e89 75% 100%
+    );
+  }
+  /* Destination-board look for the wordmark. */
+  .sign-board {
+    @apply rounded-md border-2 border-ink bg-jeep-yellow px-2.5 py-0.5 font-display font-extrabold uppercase tracking-wider text-ink;
+    box-shadow: 3px 3px 0 0 #14171f;
+  }
+}
+
+.leaflet-container {
+  font-family: inherit;
+}

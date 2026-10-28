@@ -1,0 +1,124 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  COMMUTER
+  ADMIN
+}
+
+enum FareCategory {
+  REGULAR
+  STUDENT
+  SENIOR
+  PWD
+}
+
+enum VehicleType {
+  TRADITIONAL_JEEPNEY
+  MODERN_JEEPNEY
+  UV_EXPRESS
+}
+
+enum MatrixStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+model User {
+  id            String             @id @default(cuid())
+  name          String
+  email         String             @unique
+  passwordHash  String
+  role          Role               @default(COMMUTER)
+  fareCategory  FareCategory       @default(REGULAR)
+  createdAt     DateTime           @default(now())
+  trips         Trip[]
+  notifications Notification[]
+  pushSubs      PushSubscription[]
+  pageViews     PageView[]
+}
+
+model Trip {
+  id           String       @id @default(cuid())
+  userId       String
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  originLabel  String
+  originLat    Float
+  originLng    Float
+  destLabel    String
+  destLat      Float
+  destLng      Float
+  vehicleType  VehicleType
+  distanceKm   Float
+  estimated    Boolean      @default(false)
+  fareCategory FareCategory
+  fare         Float
+  createdAt    DateTime     @default(now())
+
+  @@index([userId, createdAt])
+}
+
+model FareMatrix {
+  id              String       @id @default(cuid())
+  vehicleType     VehicleType
+  baseFare        Float
+  baseKm          Float
+  perKmRate       Float
+  discountPercent Float
+  effectiveDate   DateTime
+  status          MatrixStatus @default(DRAFT)
+  notes           String?
+  publishedAt     DateTime?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  @@index([vehicleType, status])
+}
+
+model Notification {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  body      String
+  url       String
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId, createdAt])
+}
+
+model PushSubscription {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+model PageView {
+  id        String   @id @default(cuid())
+  path      String
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}
+
+model AppSecret {
+  key       String   @id
+  value     String
+  createdAt DateTime @default(now())
+}
