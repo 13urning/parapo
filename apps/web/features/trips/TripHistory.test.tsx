@@ -58,7 +58,9 @@ describe('TripHistory', () => {
     api.remove.mockResolvedValue(undefined);
     renderWithProviders(<TripHistory />);
 
-    await user.click(await screen.findByRole('button', { name: 'Delete trip to UP Diliman' }));
+    // Delete is not on the row: open the trip, then choose Delete trip, then confirm.
+    await user.click(await screen.findByRole('button', { name: /Trip to UP Diliman/ }));
+    await user.click(within(await screen.findByRole('dialog', { name: 'Trip details' })).getByRole('button', { name: 'Delete trip' }));
     const dialog = await screen.findByRole('dialog', { name: 'Delete this trip?' });
     expect(api.remove).not.toHaveBeenCalled();
 
@@ -75,7 +77,8 @@ describe('TripHistory', () => {
     api.list.mockResolvedValue(page([trip('t1', 'UP Diliman')]));
     renderWithProviders(<TripHistory />);
 
-    await user.click(await screen.findByRole('button', { name: /delete trip to up diliman/i }));
+    await user.click(await screen.findByRole('button', { name: /Trip to UP Diliman/ }));
+    await user.click(within(await screen.findByRole('dialog', { name: 'Trip details' })).getByRole('button', { name: 'Delete trip' }));
     await user.click(within(await screen.findByRole('dialog')).getByRole('button', { name: 'Cancel' }));
 
     expect(api.remove).not.toHaveBeenCalled();
@@ -97,5 +100,40 @@ describe('TripHistory', () => {
     api.list.mockRejectedValue(new Error('boom'));
     renderWithProviders(<TripHistory />);
     expect(await screen.findByRole('alert')).toHaveTextContent('boom');
+  });
+});
+
+describe('TripHistory rows', () => {
+  it('keeps the fare as the row edge: no delete control on the row itself', async () => {
+    api.summary.mockResolvedValue({ monthTotal: 51, monthTrips: 2, allTimeTrips: 7 });
+    api.list.mockResolvedValue(page([trip('t1', 'UP Diliman')]));
+    renderWithProviders(<TripHistory />);
+    await screen.findByText(/UP Diliman/);
+    expect(screen.queryByRole('button', { name: /^Delete/ })).not.toBeInTheDocument();
+  });
+});
+
+describe('TripHistory paging and detail', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    api.summary.mockResolvedValue({ monthTotal: 51, monthTrips: 2, allTimeTrips: 7 });
+  });
+
+  it('hides Previous/Next when everything fits on one page', async () => {
+    api.list.mockResolvedValue(page([trip('t1', 'UP Diliman'), trip('t2', 'Cubao')]));
+    renderWithProviders(<TripHistory />);
+    await screen.findByText(/UP Diliman/);
+    expect(screen.queryByRole('navigation', { name: 'Pagination' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Next' })).not.toBeInTheDocument();
+  });
+
+  it('shows the Estimated tag next to the distance in the trip details sheet', async () => {
+    const user = userEvent.setup();
+    api.list.mockResolvedValue(page([trip('t2', 'Cubao')]));
+    renderWithProviders(<TripHistory />);
+    await user.click(await screen.findByRole('button', { name: /Trip to Cubao/ }));
+    const dialog = await screen.findByRole('dialog', { name: 'Trip details' });
+    expect(within(dialog).getByText('Estimated')).toBeInTheDocument();
+    expect(within(dialog).getByText(/12\.40 km/)).toBeInTheDocument();
   });
 });

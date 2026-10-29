@@ -2,35 +2,344 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-settle: cubic-bezier(0.16, 1, 0.3, 1); /* expo-out: a long, soft settle */
+  /* Phone: a 64px tab bar plus the home-indicator inset, and a 52px top bar. Laptop: a left rail instead. */
+  --nav-h: calc(4rem + env(safe-area-inset-bottom));
+  --head-h: 3.25rem;
+  /* Toasts clear the pinned primary action when a screen has one. */
+  --toast-lift: 0px;
+}
+:root:has([data-sticky-action]) {
+  /* StickyAction measures itself (padding included) into --sticky-action-h. */
+  --toast-lift: var(--sticky-action-h, 5.5rem);
+}
+@media (min-width: 1024px) {
+  /* The pinned action docks in the left column on laptop; toasts center over the map. */
+  :root,
+  :root:has([data-sticky-action]) {
+    --nav-h: 0px;
+    --head-h: 0px;
+    --toast-lift: 0px;
+  }
+}
+
 @layer base {
   html {
     -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+    scrollbar-color: #c4cbc8 transparent;
+    scrollbar-width: thin;
   }
   body {
-    @apply bg-paper font-sans text-ink antialiased;
+    @apply bg-white font-sans text-ink antialiased;
+    /* Tabular figures everywhere: money and kilometres line up and do not jitter while they roll. */
+    font-feature-settings: 'tnum' 1;
+    font-variant-numeric: tabular-nums;
+  }
+  a,
+  button,
+  summary,
+  label {
+    touch-action: manipulation;
+  }
+  button {
+    -webkit-touch-callout: none;
+    user-select: none;
+  }
+  /* 16px minimum stops iOS Safari zooming the page when a field is focused. */
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+    caret-color: #08744c;
   }
   :focus-visible {
-    outline-color: #1d4e89;
+    outline: 2px solid #08744c;
+    outline-offset: 2px;
+  }
+  ::selection {
+    background: #bfe5d4;
+    color: #15181c;
+  }
+  /* Same selector as Tailwind's preflight, later in the layer, so this colour (5.3:1) wins. */
+  input::placeholder,
+  textarea::placeholder {
+    color: #5f6670;
+    opacity: 1;
   }
 }
 
 @layer components {
-  /* Jeepney side-panel stripe: yellow / red / blue. */
-  .livery-stripe {
-    background-image: linear-gradient(
-      to bottom,
-      #ffc20e 0 50%,
-      #c8102e 50% 75%,
-      #1d4e89 75% 100%
-    );
+  /* Anything pressable gives a little under the finger. */
+  .press {
+    transition: transform 140ms var(--ease-out);
   }
-  /* Destination-board look for the wordmark. */
-  .sign-board {
-    @apply rounded-md border-2 border-ink bg-jeep-yellow px-2.5 py-0.5 font-display font-extrabold uppercase tracking-wider text-ink;
-    box-shadow: 3px 3px 0 0 #14171f;
+  .press:active {
+    transform: scale(0.97);
+  }
+
+  /* Distance slider: the whole 44px row is the touch target, the thumb is 28px. */
+  .range {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 44px;
+    background: transparent;
+    cursor: pointer;
+  }
+  .range::-webkit-slider-runnable-track {
+    height: 6px;
+    border-radius: 3px;
+    background: linear-gradient(to right, #08744c var(--pct, 0%), #dfe4e1 var(--pct, 0%));
+  }
+  .range::-moz-range-track {
+    height: 6px;
+    border-radius: 3px;
+    background: #dfe4e1;
+  }
+  .range::-moz-range-progress {
+    height: 6px;
+    border-radius: 3px;
+    background: #08744c;
+  }
+  .range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 28px;
+    width: 28px;
+    margin-top: -11px;
+    border-radius: 9999px;
+    background: #fff;
+    border: 3px solid #08744c;
+    box-shadow: 0 2px 6px rgba(21, 24, 28, 0.2);
+  }
+  .range::-moz-range-thumb {
+    height: 22px;
+    width: 22px;
+    border-radius: 9999px;
+    background: #fff;
+    border: 3px solid #08744c;
+    box-shadow: 0 2px 6px rgba(21, 24, 28, 0.2);
+  }
+
+  /* Vehicle row: the green fill grows from the left when the row is chosen. */
+  .vrow-fill {
+    transform: scaleX(0);
+    transform-origin: left center;
+    opacity: 0.4;
+    transition:
+      transform 320ms var(--ease-out),
+      opacity 200ms ease-out;
+  }
+  [data-selected='true'] > .vrow-fill {
+    transform: scaleX(1);
+    opacity: 1;
   }
 }
 
+/* ---------- Motion grammar ---------- */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+}
+@keyframes row-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+@keyframes page-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+@keyframes sheet-in {
+  from {
+    transform: translateY(100%);
+  }
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes pop {
+  0% {
+    transform: scale(0.98);
+  }
+  55% {
+    transform: scale(1.012);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes bar-grow {
+  from {
+    transform: scaleX(0);
+  }
+}
+@keyframes soft-pulse {
+  50% {
+    opacity: 0.55;
+  }
+}
+
+.animate-rise {
+  animation: rise 350ms var(--ease-settle) backwards;
+}
+.animate-row-in {
+  animation: row-in 280ms var(--ease-out) backwards;
+}
+.animate-page-in {
+  animation: page-in 220ms var(--ease-out);
+}
+.animate-sheet-in {
+  animation: sheet-in 320ms var(--ease-out);
+}
+.animate-fade-in {
+  animation: fade-in 200ms ease-out backwards;
+}
+.animate-pop {
+  animation: pop 320ms var(--ease-out);
+}
+.animate-bar {
+  transform-origin: left center;
+  animation: bar-grow 500ms var(--ease-out) backwards;
+}
+.animate-soft-pulse {
+  animation: soft-pulse 1.2s ease-in-out infinite;
+}
+.route-draw {
+  stroke-dasharray: 1 1;
+  animation: draw 800ms var(--ease-out) both;
+}
+
+/* Leaflet: the route polyline draws along its path (pathLength is set to 1 in TripMap). */
 .leaflet-container {
   font-family: inherit;
+  background: #e9eee9;
+}
+path.route-line {
+  stroke-dasharray: 1 1;
+  animation: draw 900ms var(--ease-out) both;
+}
+.leaflet-touch .leaflet-bar a {
+  width: 44px;
+  height: 44px;
+  line-height: 44px;
+}
+
+/* Reduced motion: nothing travels or scales, things only fade. Motion never blocks input. */
+@media (prefers-reduced-motion: reduce) {
+  @keyframes rise {
+    from {
+      opacity: 0;
+    }
+  }
+  @keyframes row-in {
+    from {
+      opacity: 0;
+    }
+  }
+  @keyframes page-in {
+    from {
+      opacity: 0;
+    }
+  }
+  @keyframes sheet-in {
+    from {
+      opacity: 0;
+    }
+  }
+  @keyframes pop {
+    from {
+      opacity: 0.6;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  @keyframes draw {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  @keyframes bar-grow {
+    from {
+      opacity: 0;
+    }
+  }
+  @keyframes soft-pulse {
+    50% {
+      opacity: 1;
+    }
+  }
+  .animate-rise,
+  .animate-row-in,
+  .animate-page-in,
+  .animate-sheet-in,
+  .animate-pop,
+  .animate-bar,
+  .route-draw,
+  path.route-line {
+    animation-duration: 180ms;
+    animation-timing-function: ease-out;
+  }
+  .route-draw,
+  path.route-line {
+    stroke-dasharray: none;
+  }
+  .press:active {
+    transform: none;
+  }
+  .vrow-fill {
+    transform: none;
+    opacity: 0;
+    transition: opacity 150ms ease-out;
+  }
+  [data-selected='true'] > .vrow-fill {
+    opacity: 1;
+  }
+}
+
+/* ---------- Toasts (sonner): rise 12px from the bottom and fade in ~220ms, leave with a quicker fade ---------- */
+[data-sonner-toaster] [data-sonner-toast] {
+  transition:
+    transform 220ms var(--ease-settle),
+    opacity 220ms var(--ease-settle),
+    height 220ms var(--ease-settle),
+    box-shadow 200ms;
+}
+[data-sonner-toaster] [data-sonner-toast][data-mounted='false'][data-y-position='bottom'] {
+  --y: translateY(12px);
+}
+[data-sonner-toaster] [data-sonner-toast][data-removed='true'][data-front='true'][data-swipe-out='false'] {
+  --y: translateY(0);
+  transition:
+    opacity 140ms ease-out,
+    transform 140ms ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-sonner-toaster] [data-sonner-toast] {
+    transition: opacity 180ms ease-out;
+  }
+  [data-sonner-toaster] [data-sonner-toast][data-mounted='false'][data-y-position='bottom'] {
+    --y: translateY(0);
+  }
 }

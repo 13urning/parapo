@@ -13,7 +13,7 @@ interface ModalProps {
 
 const FOCUSABLE = 'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
-/** Accessible modal: portal, Escape to close, focus trap, focus restore. */
+/** Accessible dialog: a bottom sheet on phones, centred on laptops. Portal, Escape, focus trap, focus restore. */
 export function Modal({ open, onClose, title, children, footer }: ModalProps) {
   const titleId = useId();
   const panelRef = useRef<HTMLDivElement>(null);
@@ -59,20 +59,21 @@ export function Modal({ open, onClose, title, children, footer }: ModalProps) {
   if (!open) return null;
 
   return createPortal(
-    <div className="fixed inset-0 z-50 flex items-end justify-center p-0 sm:items-center sm:p-4">
-      <div className="absolute inset-0 bg-ink/60" aria-hidden="true" onClick={() => onClose()} />
+    <div className="fixed inset-0 z-50 flex items-end justify-center lg:items-center lg:p-4">
+      <div className="animate-fade-in absolute inset-0 bg-ink/50" aria-hidden="true" onClick={() => onClose()} />
       <div
         ref={panelRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        className="relative w-full max-w-md rounded-t-2xl border-t-4 border-jeep-yellow bg-white p-6 shadow-2xl sm:rounded-2xl"
+        className="animate-sheet-in relative max-h-[90dvh] w-full max-w-md overflow-y-auto rounded-t-3xl bg-white px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-3 lg:animate-pop lg:rounded-3xl lg:p-6"
       >
-        <h2 id={titleId} className="font-display text-xl font-bold text-ink">
+        <div className="mx-auto mb-3 h-1.5 w-10 rounded-full bg-line lg:hidden" aria-hidden="true" />
+        <h2 id={titleId} className="text-xl font-extrabold text-ink">
           {title}
         </h2>
-        <div className="mt-2 text-sm text-ink-soft">{children}</div>
-        {footer && <div className="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">{footer}</div>}
+        <div className="mt-2 text-[15px] text-ink-soft">{children}</div>
+        {footer && <div className="mt-6 flex flex-col-reverse gap-2 lg:flex-row lg:justify-end">{footer}</div>}
       </div>
     </div>,
     document.body,

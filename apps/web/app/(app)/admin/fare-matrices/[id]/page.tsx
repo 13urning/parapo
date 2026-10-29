@@ -9,7 +9,7 @@ export default async function FareMatrixPage({ params }: { params: Promise<{ id:
   return (
     <>
       <PageHeader title="Fare matrix" />
-      <div className="max-w-2xl">
+      <div className="max-w-xl">
         <MatrixEditor id={id} />
       </div>
     </>

@@ -1,0 +1,191 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-29T08:30:00.000Z",
+  "title": "Design System: ParaPo",
+  "extensions": {
+    "colorMeta": {
+      "ground": { "role": "neutral", "displayName": "Ground White", "canonical": "#FFFFFF", "tonalRamp": ["#262626", "#3B3B3B", "#525252", "#6B6B6B", "#8A8A8A", "#ABABAB", "#D4D4D4", "#FFFFFF"] },
+      "ink": { "role": "neutral", "displayName": "Commuter Ink", "canonical": "oklch(20.8% 0.009 255.6)", "tonalRamp": ["#090B0F", "#212429", "#3D4045", "#5A5E63", "#7A7E83", "#9B9FA4", "#C0C4CA", "#EAEFF5"] },
+      "ink-soft": { "role": "neutral", "displayName": "Slate", "canonical": "oklch(46.9% 0.020 259.4)", "tonalRamp": ["#070B14", "#1E242E", "#3A404A", "#575E69", "#767E89", "#979FAB", "#BDC5D1", "#E7EFFC"] },
+      "ink-faint": { "role": "neutral", "displayName": "Placeholder Slate", "canonical": "oklch(50.8% 0.018 257.2)", "tonalRamp": ["#070B13", "#1F242D", "#3A4049", "#575E68", "#777E88", "#979FAA", "#BDC5D0", "#E7EFFB"] },
+      "connector": { "role": "neutral", "displayName": "Connector Gray", "canonical": "oklch(65.1% 0.015 258.4)", "tonalRamp": ["#070B12", "#20242B", "#3B4048", "#585E66", "#787E86", "#999FA8", "#BEC5CE", "#E8EFF9"] },
+      "line": { "role": "neutral", "displayName": "Hairline", "canonical": "oklch(92.9% 0.003 165.1)", "tonalRamp": ["#0A0B0B", "#232424", "#3E403F", "#5C5E5D", "#7C7E7D", "#9D9F9E", "#C3C4C4", "#EDEFEE"] },
+      "surface": { "role": "neutral", "displayName": "Surface Gray", "canonical": "oklch(96.5% 0.002 165.1)", "tonalRamp": ["#0A0B0B", "#232424", "#3F403F", "#5C5E5D", "#7C7E7D", "#9D9F9E", "#C3C4C4", "#EDEFEE"] },
+      "surface-deep": { "role": "neutral", "displayName": "Pressed Gray", "canonical": "oklch(93.9% 0.005 165.0)", "tonalRamp": ["#090C0B", "#222523", "#3D413F", "#5B5E5D", "#7B7E7C", "#9C9F9D", "#C1C5C3", "#EBEFED"] },
+      "mapbg": { "role": "neutral", "displayName": "Map Ground", "canonical": "oklch(94.4% 0.009 145.5)", "tonalRamp": ["#090C09", "#222522", "#3D413D", "#5B5F5B", "#7A7F7A", "#9BA09B", "#C1C6C1", "#EBF0EB"] },
+      "brand": { "role": "primary", "displayName": "Jeepney Green", "canonical": "oklch(49.4% 0.109 160.3)", "tonalRamp": ["#001400", "#003111", "#00502B", "#007048", "#359167", "#5CB388", "#8DD7B0", "#C0FFDD"] },
+      "brand-dark": { "role": "primary", "displayName": "Deep Jeepney", "canonical": "oklch(42.0% 0.092 160.7)", "tonalRamp": ["#001401", "#003014", "#004E2F", "#216D4C", "#468E6B", "#6CAF8D", "#99D4B4", "#CAFCE1"] },
+      "brand-50": { "role": "primary", "displayName": "Mint Wash", "canonical": "oklch(95.6% 0.016 166.7)", "tonalRamp": ["#050D0A", "#1D2722", "#38433E", "#56615C", "#75807B", "#96A29C", "#BBC8C2", "#E5F2EC"] },
+      "signal": { "role": "secondary", "displayName": "Cheapest Amber", "canonical": "oklch(81.3% 0.165 75.0)", "tonalRamp": ["#1C0300", "#3D1900", "#613300", "#874F00", "#AF6D00", "#D98C00", "#FFB224", "#FFDD62"] },
+      "signal-ink": { "role": "secondary", "displayName": "Amber Ink", "canonical": "#3A2A00", "tonalRamp": ["#1C0300", "#3D1900", "#613300", "#874F00", "#AF6D00", "#D98C00", "#FFB224", "#FFDD62"] },
+      "danger": { "role": "neutral", "displayName": "Signal Red", "canonical": "oklch(50.0% 0.182 29.5)", "tonalRamp": ["#320000", "#5A0000", "#860000", "#AD1A10", "#D44536", "#F4705F", "#FF9E8C", "#FFD0BF"] },
+      "danger-50": { "role": "neutral", "displayName": "Red Wash", "canonical": "#FDECEA", "tonalRamp": ["#320000", "#5A0000", "#860000", "#AD1A10", "#D44536", "#F4705F", "#FF9E8C", "#FFD0BF"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "The \"Para po!\" line on the login brand panel; 72px on laptop." },
+      "figure-xl": { "displayName": "Figure XL", "purpose": "The Fares calculator result." },
+      "figure-lg": { "displayName": "Figure L", "purpose": "\"Spent this month\" total on Trips." },
+      "headline": { "displayName": "Headline", "purpose": "Screen titles (\"Where to?\", page headers); 28px on login and register." },
+      "figure-row": { "displayName": "Figure Row", "purpose": "The fare in each vehicle row." },
+      "figure-sm": { "displayName": "Figure S", "purpose": "Fares in trip-history rows." },
+      "title": { "displayName": "Title", "purpose": "Empty-state titles (18px); sheet and dialog titles run 20px." },
+      "section": { "displayName": "Section", "purpose": "In-screen section heads such as \"Choose a ride\"." },
+      "body-strong": { "displayName": "Body Strong", "purpose": "Vehicle names and button labels; inputs use 16px semibold." },
+      "body": { "displayName": "Body", "purpose": "Descriptions, notification bodies, helper copy." },
+      "label": { "displayName": "Label", "purpose": "Field labels and segmented options." },
+      "meta": { "displayName": "Meta", "purpose": "Vehicle descriptors, dates, discount notes, fine print." },
+      "tag": { "displayName": "Tag", "purpose": "Status and Cheapest tags." },
+      "tab": { "displayName": "Tab", "purpose": "Bottom-bar and rail labels." }
+    },
+    "shadows": [
+      { "name": "pop", "value": "0 8px 24px -6px rgba(21,24,28,0.18), 0 2px 6px rgba(21,24,28,0.06)", "purpose": "Place-search suggestion list and skip link: things floating over the page." },
+      { "name": "thumb", "value": "0 1px 3px rgba(21,24,28,0.14)", "purpose": "Active option of a segmented control or the admin section switch." },
+      { "name": "marker", "value": "0 1px 4px rgba(21,24,28,0.35)", "purpose": "Pickup and drop-off markers on the map." },
+      { "name": "slider-knob", "value": "0 2px 6px rgba(21,24,28,0.2)", "purpose": "Distance slider thumb on Fares." },
+      { "name": "selection-ring", "value": "inset 0 0 0 2px #08744C", "purpose": "Selected vehicle row and focused place field. A stroke, not elevation." }
+    ],
+    "motion": [
+      { "name": "ease-out", "value": "cubic-bezier(0.23, 1, 0.32, 1)", "purpose": "Default curve: press, row entrance, page slide, sheets, fills, route draw." },
+      { "name": "ease-settle", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Long expo-out settle for the ride list rising and toast entrance." },
+      { "name": "page-in", "value": "220ms ease-out, translateY(12px) + fade", "purpose": "Every screen, via app/template.tsx." },
+      { "name": "rise", "value": "350ms ease-settle, translateY(28px) + fade", "purpose": "Ride list on Plan; login form sheet." },
+      { "name": "row-in", "value": "280ms ease-out, translateY(8px) + fade", "purpose": "List and vehicle row entrance." },
+      { "name": "stagger-vehicle", "value": "40ms", "purpose": "Gap between vehicle rows and between their fare count-ups." },
+      { "name": "stagger-list", "value": "30ms (capped at 12 to 14 rows)", "purpose": "Trip, notification and analytics rows." },
+      { "name": "tick", "value": "420ms, ease-out quint (1-(1-t)^5)", "purpose": "Fares count up to value (useTickingNumber)." },
+      { "name": "press", "value": "140ms ease-out, scale(0.97)", "purpose": "Anything pressable." },
+      { "name": "select-pop", "value": "320ms ease-out, scale 0.98 to 1.012 to 1", "purpose": "Vehicle row on selection; laptop dialog entrance." },
+      { "name": "select-fill", "value": "320ms ease-out, scaleX(0 to 1) from left", "purpose": "Mint fill and green ring growing into the selected row." },
+      { "name": "sheet-in", "value": "320ms ease-out, translateY(100%)", "purpose": "Bottom sheets on phone." },
+      { "name": "route-draw", "value": "800ms (strip) / 900ms (map) ease-out, stroke-dashoffset 1 to 0 with pathLength 1", "purpose": "Route line draws along its path." },
+      { "name": "bar-grow", "value": "500ms ease-out, scaleX from left", "purpose": "Analytics bars." },
+      { "name": "toast", "value": "enter 220ms ease-settle translateY(12px) + fade; exit 140ms ease-out fade", "purpose": "Sonner toast overrides in globals.css." },
+      { "name": "reduced", "value": "180ms ease-out opacity only", "purpose": "prefers-reduced-motion: keyframes become fades; press, fill growth, route draw and counting are removed." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "lg", "value": "1024px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The one go action of a screen; pinned full-width above the tab bar at 56px on Plan.",
+      "html": "<button class=\"ds-btn ds-btn-primary\">Log this trip · ₱21.00</button>",
+      "css": ".ds-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 20px; border: none; border-radius: 14px; font-family: Manrope, system-ui, sans-serif; font-weight: 700; font-size: 16px; font-variant-numeric: tabular-nums; cursor: pointer; transition: background-color 150ms, transform 140ms cubic-bezier(0.23, 1, 0.32, 1); } .ds-btn:active { transform: scale(0.97); } .ds-btn:focus-visible { outline: 2px solid #08744C; outline-offset: 2px; } .ds-btn-primary { background: #08744C; color: #FFFFFF; } .ds-btn-primary:hover { background: #065C3C; } .ds-btn-primary:disabled { background: #E8ECEA; color: #5F6670; cursor: not-allowed; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Gray-filled companion action; also the settled state of a pinned action (\"Trip logged\").",
+      "html": "<button class=\"ds-btn-s\">Previous</button>",
+      "css": ".ds-btn-s { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 20px; border: none; border-radius: 14px; background: #F2F4F3; color: #15181C; font-family: Manrope, system-ui, sans-serif; font-weight: 700; font-size: 16px; cursor: pointer; transition: background-color 150ms, transform 140ms cubic-bezier(0.23, 1, 0.32, 1); } .ds-btn-s:hover { background: #E8ECEA; } .ds-btn-s:active { transform: scale(0.97); } .ds-btn-s:focus-visible { outline: 2px solid #08744C; outline-offset: 2px; }"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Quiet text action with no fill until touched, often in green.",
+      "html": "<button class=\"ds-btn-g\">Mark all as read</button>",
+      "css": ".ds-btn-g { display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; border: none; border-radius: 14px; background: transparent; color: #08744C; font-family: Manrope, system-ui, sans-serif; font-weight: 700; font-size: 15px; cursor: pointer; transition: background-color 150ms, transform 140ms cubic-bezier(0.23, 1, 0.32, 1); } .ds-btn-g:hover { background: #F2F4F3; } .ds-btn-g:active { transform: scale(0.97); } .ds-btn-g:focus-visible { outline: 2px solid #08744C; outline-offset: 2px; }"
+    },
+    {
+      "name": "Field",
+      "kind": "input",
+      "refersTo": "field",
+      "description": "Gray-filled text field with a bold label; turns white with a green border on focus.",
+      "html": "<div class=\"ds-field\"><label class=\"ds-field-label\" for=\"ds-email\">Email</label><input id=\"ds-email\" class=\"ds-field-input\" placeholder=\"juan@parapo.local\"></div>",
+      "css": ".ds-field { display: grid; gap: 6px; font-family: Manrope, system-ui, sans-serif; } .ds-field-label { font-size: 14px; font-weight: 700; color: #15181C; } .ds-field-input { min-height: 48px; padding: 10px 16px; border: 2px solid transparent; border-radius: 14px; background: #F2F4F3; color: #15181C; font: inherit; font-size: 16px; font-weight: 600; caret-color: #08744C; transition: background-color 150ms, border-color 150ms; } .ds-field-input::placeholder { color: #5F6670; font-weight: 500; opacity: 1; } .ds-field-input:focus-visible { outline: none; background: #FFFFFF; border-color: #08744C; } .ds-field-input[aria-invalid=true] { border-color: #B42318; background: #FDECEA; }"
+    },
+    {
+      "name": "Vehicle Row",
+      "kind": "custom",
+      "refersTo": "vehicle-row-selected",
+      "description": "Signature quote row: glyph tile, name with Cheapest tag, descriptor, and the fare right-aligned with the struck regular fare. Shown selected.",
+      "html": "<label class=\"ds-vrow\" data-selected=\"true\"><span class=\"ds-vrow-fill\"></span><input type=\"radio\" name=\"ds-ride\" checked class=\"ds-sr\"><span class=\"ds-vrow-glyph\"><svg width=\"30\" height=\"30\" viewBox=\"0 0 32 32\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M3 22V10.5A2.5 2.5 0 0 1 5.5 8h13.2a3 3 0 0 1 2.4 1.2L25 14.5l2.4 1.6c.4.3.6.8.6 1.3V22H3Z\"/><path d=\"M7 11.5h4.5V15H7zM13.5 11.5H18V15h-4.5zM20.2 11.5l2.6 3.5h-3.1\"/><circle cx=\"9\" cy=\"22.5\" r=\"2.4\" fill=\"currentColor\" stroke=\"none\"/><circle cx=\"23\" cy=\"22.5\" r=\"2.4\" fill=\"currentColor\" stroke=\"none\"/></svg></span><span class=\"ds-vrow-text\"><span class=\"ds-vrow-name\">UV Express <span class=\"ds-tag-amber\">Cheapest</span></span><span class=\"ds-vrow-note\">Van</span></span><span class=\"ds-vrow-fare\"><span class=\"ds-vrow-price\">₱21.00</span><span class=\"ds-vrow-reg\"><s>₱26.50</s> regular</span></span></label>",
+      "css": ".ds-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); } .ds-vrow { position: relative; isolation: isolate; display: flex; align-items: center; gap: 14px; padding: 18px 16px; border-radius: 14px; font-family: Manrope, system-ui, sans-serif; font-variant-numeric: tabular-nums; color: #15181C; cursor: pointer; transition: transform 140ms cubic-bezier(0.23, 1, 0.32, 1); } .ds-vrow:active { transform: scale(0.97); } .ds-vrow:has(:focus-visible) { outline: 2px solid #08744C; outline-offset: 2px; } .ds-vrow-fill { position: absolute; inset: 0; z-index: -1; border-radius: 14px; background: #E7F4EE; box-shadow: inset 0 0 0 2px #08744C; transform: scaleX(0); transform-origin: left center; opacity: 0.4; transition: transform 320ms cubic-bezier(0.23, 1, 0.32, 1), opacity 200ms ease-out; } .ds-vrow[data-selected=true] .ds-vrow-fill { transform: scaleX(1); opacity: 1; } .ds-vrow-glyph { display: grid; place-items: center; width: 44px; height: 44px; flex-shrink: 0; border-radius: 12px; background: #F2F4F3; } .ds-vrow[data-selected=true] .ds-vrow-glyph { background: #FFFFFF; } .ds-vrow-text { flex: 1; min-width: 0; } .ds-vrow-name { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: 16px; font-weight: 700; line-height: 1.25; } .ds-vrow-note { display: block; margin-top: 2px; font-size: 13px; font-weight: 500; color: #545B66; } .ds-vrow-fare { margin-left: auto; text-align: right; } .ds-vrow-price { display: block; font-size: 26px; font-weight: 800; line-height: 1; letter-spacing: -0.02em; } .ds-vrow-reg { display: block; margin-top: 6px; font-size: 12px; font-weight: 500; color: #545B66; } .ds-tag-amber { display: inline-flex; padding: 2px 8px; border-radius: 6px; background: #FFB020; color: #3A2A00; font-size: 12px; font-weight: 800; line-height: 20px; }"
+    },
+    {
+      "name": "Tags",
+      "kind": "chip",
+      "refersTo": "tag-cheapest",
+      "description": "Plain status tags; amber only for Cheapest.",
+      "html": "<span class=\"ds-tag ds-tag-c\">Cheapest</span> <span class=\"ds-tag ds-tag-g\">Published</span> <span class=\"ds-tag ds-tag-n\">Draft</span> <span class=\"ds-tag ds-tag-r\">Error</span>",
+      "css": ".ds-tag { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 6px; font-family: Manrope, system-ui, sans-serif; font-size: 12px; font-weight: 800; line-height: 20px; } .ds-tag-c { background: #FFB020; color: #3A2A00; } .ds-tag-g { background: #E7F4EE; color: #065C3C; } .ds-tag-n { background: #F2F4F3; color: #545B66; } .ds-tag-r { background: #FDECEA; color: #B42318; }"
+    },
+    {
+      "name": "Route Strip",
+      "kind": "custom",
+      "refersTo": "route-strip",
+      "description": "Slim strip sketching the real route that opens the map on phones.",
+      "html": "<button class=\"ds-strip\"><svg class=\"ds-strip-svg\" width=\"200\" height=\"64\" viewBox=\"0 0 200 64\" fill=\"none\"><path class=\"ds-strip-line\" pathLength=\"1\" d=\"M38 46 C60 40 70 36 90 34 S120 22 140 18\" stroke=\"#08744C\" stroke-width=\"4\" stroke-linecap=\"round\"/><circle cx=\"140\" cy=\"18\" r=\"6\" fill=\"#fff\" stroke=\"#08744C\" stroke-width=\"3\"/><rect x=\"33\" y=\"41\" width=\"10\" height=\"10\" rx=\"2.5\" fill=\"#15181C\"/></svg><span class=\"ds-strip-label\">12.4 km · View route <svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m9.5 6 6 6-6 6\"/></svg></span></button>",
+      "css": ".ds-strip { position: relative; display: flex; align-items: center; width: 100%; height: 64px; padding: 0 14px 0 0; overflow: hidden; border: none; border-radius: 14px; background: #E9EEE9; cursor: pointer; transition: transform 140ms cubic-bezier(0.23, 1, 0.32, 1); } .ds-strip:active { transform: scale(0.97); } .ds-strip:focus-visible { outline: 2px solid #08744C; outline-offset: 2px; } .ds-strip-svg { position: absolute; top: 0; bottom: 0; left: 0; } .ds-strip-line { stroke-dasharray: 1 1; animation: ds-draw 800ms cubic-bezier(0.23, 1, 0.32, 1) both; } @keyframes ds-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } } .ds-strip-label { position: relative; margin-left: auto; display: flex; align-items: center; gap: 2px; font-family: Manrope, system-ui, sans-serif; font-size: 13px; font-weight: 700; color: #065C3C; font-variant-numeric: tabular-nums; } @media (prefers-reduced-motion: reduce) { .ds-strip-line { stroke-dasharray: none; animation: ds-fade 180ms ease-out both; } @keyframes ds-fade { from { opacity: 0; } } }"
+    },
+    {
+      "name": "Segmented Control",
+      "kind": "custom",
+      "refersTo": "segmented-active",
+      "description": "Gray track with a white thumb; used for fare category, vehicle and admin section switches.",
+      "html": "<div class=\"ds-seg\"><span class=\"ds-seg-opt ds-seg-on\">Fare matrices</span><span class=\"ds-seg-opt\">Analytics</span></div>",
+      "css": ".ds-seg { display: flex; gap: 4px; max-width: 384px; padding: 4px; border-radius: 14px; background: #F2F4F3; font-family: Manrope, system-ui, sans-serif; } .ds-seg-opt { flex: 1; display: flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 12px; border-radius: 11px; font-size: 14px; font-weight: 700; color: #545B66; cursor: pointer; transition: background-color 150ms, color 150ms, transform 140ms cubic-bezier(0.23, 1, 0.32, 1); } .ds-seg-opt:hover { color: #15181C; } .ds-seg-opt:active { transform: scale(0.97); } .ds-seg-on { background: #FFFFFF; color: #15181C; box-shadow: 0 1px 3px rgba(21,24,28,0.14); }"
+    },
+    {
+      "name": "Bottom Tab Bar",
+      "kind": "nav",
+      "refersTo": "nav-tab-active",
+      "description": "Phone navigation; the same items become a 96px left rail at 1024px.",
+      "html": "<nav class=\"ds-tabs\"><a class=\"ds-tab ds-tab-on\" href=\"#\"><span class=\"ds-tab-pill\"><svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"6\" cy=\"19\" r=\"2.25\"/><circle cx=\"18\" cy=\"5\" r=\"2.25\"/><path d=\"M8.25 19H15a3.5 3.5 0 0 0 0-7H9a3.5 3.5 0 0 1 0-7h6.75\"/></svg></span>Plan</a><a class=\"ds-tab\" href=\"#\"><span class=\"ds-tab-pill\"><svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M3.5 12a8.5 8.5 0 1 0 2.6-6.1L3.5 8.5\"/><path d=\"M3.5 3.5v5h5\"/><path d=\"M12 7.5V12l3 2\"/></svg></span>Trips</a><a class=\"ds-tab\" href=\"#\"><span class=\"ds-tab-pill\"><svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M7.5 20V4.5h5.25a4.25 4.25 0 0 1 0 8.5H7.5\"/><path d=\"M4.5 8.5h12M4.5 11.5h12\"/></svg></span>Fares</a><a class=\"ds-tab\" href=\"#\"><span class=\"ds-tab-pill\"><svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M18 8.5a6 6 0 1 0-12 0c0 6.5-2.5 8.5-2.5 8.5h17S18 15 18 8.5\"/><path d=\"M13.7 20.5a2 2 0 0 1-3.4 0\"/></svg><span class=\"ds-badge\">1</span></span>Alerts</a></nav>",
+      "css": ".ds-tabs { display: flex; height: 64px; border-top: 1px solid #E6E8E7; background: #FFFFFF; font-family: Manrope, system-ui, sans-serif; } .ds-tab { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; min-height: 56px; font-size: 11px; font-weight: 700; line-height: 1; color: #545B66; text-decoration: none; transition: color 150ms, transform 140ms cubic-bezier(0.23, 1, 0.32, 1); } .ds-tab:hover { color: #15181C; } .ds-tab:active { transform: scale(0.97); } .ds-tab:focus-visible { outline: 2px solid #08744C; outline-offset: 2px; } .ds-tab-pill { position: relative; display: grid; place-items: center; width: 48px; height: 28px; border-radius: 9999px; transition: background-color 200ms; } .ds-tab-on { color: #08744C; } .ds-tab-on .ds-tab-pill { background: #E7F4EE; } .ds-badge { position: absolute; top: -6px; right: -2px; display: flex; align-items: center; justify-content: center; min-width: 18px; height: 18px; padding: 0 4px; border-radius: 9999px; background: #B42318; color: #FFFFFF; font-size: 11px; font-weight: 800; box-shadow: 0 0 0 2px #FFFFFF; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Ride-Hailing Quote",
+    "overview": "ParaPo quotes a cash jeepney fare the way a ride-hailing app quotes a ride: a pickup and drop-off stack, a slim sketch of the route, then one tall row per vehicle with its price right-aligned, compared at a glance. The ground is plain white, the type is one workhorse sans set heavy, and a single green carries everything that means \"this one\" or \"go\": the selected ride, the primary button, the route line, the active tab. Nothing is boxed for decoration. Rows sit on the white ground separated by space or hairlines, and only grouped inputs and the route strip sit on a pale gray tone.\n\nThe system is built at 390px first and reflows whole to the laptop: the same column docks at the left (440px on Plan) while the map fills the rest, and the bottom tab bar becomes a left rail. Density is generous and thumb-led: every target is at least 44px, primary actions pin above the tab bar, and type never drops below 11px (tab labels) with body copy at 15px.\n\nMotion is quiet and physical: screens slide 12px up while fading in, prices count up to value one row after another, the selected row fills with green from the left, and the route draws itself along its path. Under reduced motion everything only fades. The system confirms two visual rejections: the generic SaaS dashboard (white cards, stat tiles, soft-shadow panels) and the dark neon \"tech\" look; and it must not return to bureaucratic-document metaphors or table-led fare answers.",
+    "keyCharacteristics": [
+      "White ground, near-black ink, one brand green, amber reserved for the Cheapest tag.",
+      "One typeface (Manrope via next/font) with tabular figures everywhere.",
+      "Fares are extrabold tabular numerals, right-aligned, and lead their row.",
+      "Rows and hairlines, not cards; pale gray tone groups inputs.",
+      "One 14px corner on every control, row, strip and toast.",
+      "Phone tab bar becomes a laptop rail; the phone column docks left beside a permanent map.",
+      "Motion settles on long expo-out curves and never delays input; reduced motion fades only."
+    ],
+    "rules": [
+      { "name": "The One Green Rule", "body": "Green means intent: selected, primary, route, active, link. It is never a decorative fill or a section background inside the app; the only full-green field is the login brand panel.", "section": "colors" },
+      { "name": "The Earned Amber Rule", "body": "Amber marks the single cheapest ride and nothing else. Draft matrices, warnings and estimates stay neutral gray; a second amber element on a screen breaks the rule.", "section": "colors" },
+      { "name": "The Tabular Everywhere Rule", "body": "`tnum` is on at the body. Never turn it off for an amount, a distance or a count.", "section": "typography" },
+      { "name": "The Number Leads Rule", "body": "An amount is always extrabold, ink, right-aligned in its row, and the heaviest element in its row or section. On Trips and Fares it is the largest type on the screen; on Plan the 30px \"Where to?\" title is larger than the 26px row fare, as the approved comp specifies.", "section": "typography" },
+      { "name": "The Sentence Case Rule", "body": "Labels, tags, headings and tabs are sentence case. The shipped system has no uppercase or letter-spaced labels and no small label set above a title.", "section": "typography" },
+      { "name": "The Same Column Rule", "body": "The laptop layout is the phone column docked beside a map, never a different arrangement of the same content.", "section": "layout" },
+      { "name": "The Thumb Zone Rule", "body": "The one primary action of a commuter screen is full-width and pinned above the tab bar, reachable by thumb.", "section": "layout" },
+      { "name": "The Float-Only Shadow Rule", "body": "A shadow means \"this is above the page.\" Rows, sections and panels at rest never carry one.", "section": "elevation" },
+      { "name": "The 14px Rule", "body": "A new control, row or container uses 14px corners unless it nests inside one (step down) or is a sheet (step up).", "section": "shapes" }
+    ],
+    "dos": [
+      "Do lead every commuter screen with the amount: extrabold, tabular, right-aligned, the heaviest element in its row.",
+      "Do keep green for intent (selected, primary, route, active, link) and amber for the single Cheapest tag.",
+      "Do group with the Surface Gray tone or a hairline; leave rows on the white ground.",
+      "Do use 14px corners for controls, rows, strips and toasts, stepping down inside them and up for sheets.",
+      "Do keep every target at least 44px and pin the screen's one primary action above the tab bar.",
+      "Do reflow the phone column whole for laptop: dock it, add the rail, give the map the rest.",
+      "Do draw icons from the one line family (1.75 stroke, round caps, currentColor) and reuse the pickup dot and drop-off square wherever a route appears.",
+      "Do stagger lists (40ms for vehicle rows, 30ms for other rows) and fall back to opacity-only fades under reduced motion.",
+      "Do show the working: matrix, effective date, distance, discount, and the \"illustrative, not official\" note beside seeded fares.",
+      "Do signal unread or selected state with more than colour (dot plus weight plus spoken text; ring plus fill)."
+    ],
+    "donts": [
+      "Don't build a SaaS dashboard: no white rounded cards, stat tiles or soft-shadow panels.",
+      "Don't use a dark neon \"tech\" look.",
+      "Don't return to bureaucratic-document metaphors (notices, stamps, forms) or answer a fare with a km-by-fare table.",
+      "Don't put amber on drafts, warnings or estimates; those stay neutral.",
+      "Don't set Connector Gray as text; it is for strokes only.",
+      "Don't shadow anything that does not float over the page.",
+      "Don't show a per-vehicle travel time or any figure ParaPo has no source for.",
+      "Don't present seeded fares as an official LTFRB fare guide.",
+      "Don't let motion delay input or exceed the opacity-only fallback under reduced motion."
+    ]
+  }
+}

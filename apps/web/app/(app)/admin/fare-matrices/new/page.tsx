@@ -7,8 +7,8 @@ export const metadata: Metadata = { title: 'New fare matrix' };
 export default function NewFareMatrixPage() {
   return (
     <>
-      <PageHeader title="New fare matrix" />
-      <div className="max-w-2xl">
+      <PageHeader title="New fare matrix" description="Drafts are invisible to commuters until published." />
+      <div className="max-w-xl">
         <MatrixForm />
       </div>
     </>

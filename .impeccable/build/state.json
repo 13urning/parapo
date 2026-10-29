@@ -1,0 +1,131 @@
+{
+  "tool": "build-phase",
+  "version": 2,
+  "startedAt": "2026-10-29T03:34:58.468Z",
+  "comp": ".impeccable/mocks/plan-comp-b.png",
+  "direction": "fe5f0c25",
+  "breakpoint": "390x844",
+  "artifact": "apps/web/app/(app)/plan/page.tsx",
+  "phase": "hero",
+  "phases": {
+    "comps": {
+      "status": "closed",
+      "openedAt": "2026-10-29T03:34:58.468Z",
+      "closedAt": "2026-10-29T04:18:36.225Z",
+      "attempts": 3,
+      "notes": [],
+      "gate": {
+        "ok": true,
+        "reasons": [],
+        "summary": "3 comps, 1 approved",
+        "approved": ".impeccable/mocks/plan-comp-b.png",
+        "at": "2026-10-29T04:18:36.225Z"
+      },
+      "forced": null
+    },
+    "spec": {
+      "status": "closed",
+      "openedAt": "2026-10-29T04:18:36.233Z",
+      "closedAt": "2026-10-29T07:13:45.887Z",
+      "attempts": 7,
+      "notes": [
+        {
+          "at": "2026-10-29T06:52:05.182Z",
+          "text": "spec/plates not applicable: comp B is hand-coded HTML with no raster imagery; its CSS is the spec and Manrope was chosen directly. Fidelity verified by comp-diff of plan-comp-b.png vs ride-m-plan-rest.png. Rationale recorded in .impeccable/surfaces/apps-web.md (Deliberate departures)."
+        },
+        {
+          "at": "2026-10-29T07:08:38.809Z",
+          "text": "comp-diff plan-comp-b vs ride-m-plan-rest: overall 74%, color 98%, bands 97%, structure 59%. Structural drift inspected in side-by-side: comp carries a fake 26px status bar offsetting every band, and live route data differs (12.4 km, UV Express cheapest) from the comp's sample (6.8 km, jeepney cheapest). Layout, hierarchy, type and palette match; deliberate departures (no ~22 min, initials button, fare breakdown disclosure) recorded in the surface brief."
+        }
+      ],
+      "gate": {
+        "ok": true,
+        "reasons": [],
+        "summary": "11 regions, 0 plates, 3 text regions measured",
+        "at": "2026-10-29T07:13:45.887Z"
+      },
+      "forced": null
+    },
+    "plates": {
+      "status": "closed",
+      "openedAt": "2026-10-29T07:13:45.887Z",
+      "closedAt": "2026-10-29T07:13:54.128Z",
+      "attempts": 1,
+      "notes": [],
+      "gate": {
+        "ok": true,
+        "reasons": [],
+        "summary": "no plates owed",
+        "at": "2026-10-29T07:13:54.128Z"
+      },
+      "forced": null
+    },
+    "hero": {
+      "status": "open",
+      "openedAt": "2026-10-29T07:13:54.128Z",
+      "closedAt": null,
+      "attempts": 1,
+      "notes": [],
+      "gate": {
+        "ok": false,
+        "reasons": [
+          "no hero capture at .impeccable/review/hero-repro.png: screenshot the first viewport at the comp's own dimensions (390x844) into that path"
+        ],
+        "at": "2026-10-29T07:13:56.110Z"
+      },
+      "forced": null,
+      "readingsSeen": {
+        "text wordmark: cap height 21.7px in the build, 12.3px in the comp (+76%); set font-size so the cap height renders at 12.3px": 1,
+        "text title: cap height 12.1px in the build, 21.7px in the comp (-44%); set font-size so the cap height renders at 21.7px (font-match ranked Manrope 700 at 30px)": 1,
+        "text route-strip: cap height 11.4px in the build, 28.5px in the comp (-60%); set font-size so the cap height renders at 28.5px": 1,
+        "text route-stack: 1 line in the build, 2 in the comp; the measure (max-width, font-size, letter-spacing) wraps it differently, so the block is a different shape": 1,
+        "text route-stack: the face renders 33% heavier than the comp's (ink density 0.66 vs 0.50); drop a weight step or use the ranked face": 1,
+        "text route-strip: ink is #18181a in the build, #0b7848 in the comp; use the comp's colour": 1,
+        "text title: its first line starts 26px lower than in the comp (32px vs 6px into the region box); the spacing above it is too large": 1,
+        "control vehicle-row-2: its ink is 90px tall in the build and 43px in the comp (+47px); match the height, not only the position": 1,
+        "control vehicle-row-3: its ink is 66px tall in the build and 43px in the comp (+23px); match the height, not only the position": 1,
+        "chrome tab-bar: its ink is 51px tall in the build and 39px in the comp (+12px); match the height, not only the position": 1
+      },
+      "records": 1
+    },
+    "sections": {
+      "status": "pending",
+      "openedAt": null,
+      "closedAt": null,
+      "attempts": 0,
+      "notes": [],
+      "gate": null,
+      "forced": null
+    },
+    "motion": {
+      "status": "pending",
+      "openedAt": null,
+      "closedAt": null,
+      "attempts": 0,
+      "notes": [],
+      "gate": null,
+      "forced": null
+    },
+    "responsive": {
+      "status": "pending",
+      "openedAt": null,
+      "closedAt": null,
+      "attempts": 0,
+      "notes": [],
+      "gate": null,
+      "forced": null
+    },
+    "review": {
+      "status": "pending",
+      "openedAt": null,
+      "closedAt": null,
+      "attempts": 0,
+      "notes": [],
+      "gate": null,
+      "forced": null
+    }
+  },
+  "finish": null,
+  "sessionId": "52b4c3c4-46d8-4b18-8cb5-ee0e4f581e79",
+  "plates": {}
+}

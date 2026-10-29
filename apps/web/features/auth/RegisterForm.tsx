@@ -39,17 +39,25 @@ export function RegisterForm() {
 
   return (
     <div>
-      <h1 className="font-display text-3xl font-extrabold text-ink">Create your account</h1>
-      <p className="mt-1 text-ink-soft">Your fare category decides which discount we apply.</p>
+      <h1 className="text-[28px] font-extrabold leading-tight tracking-[-0.02em] text-ink">Create your account</h1>
+      <p className="mt-1 text-[15px] text-ink-soft">Your fare category decides which discount we apply.</p>
 
       <form onSubmit={onSubmit} noValidate className="mt-6 space-y-4">
         {serverError && (
-          <p role="alert" className="rounded-lg border border-jeep-red/30 bg-jeep-red-soft px-3 py-2 text-sm font-medium text-jeep-red-dark">
+          <p role="alert" className="rounded-[14px] bg-danger-50 px-4 py-3 text-sm font-semibold text-danger">
             {serverError}
           </p>
         )}
         <Input label="Full name" autoComplete="name" error={errors.name?.message} {...register('name')} />
-        <Input label="Email" type="email" autoComplete="email" error={errors.email?.message} {...register('email')} />
+        <Input
+          label="Email"
+          type="email"
+          inputMode="email"
+          autoComplete="email"
+          autoCapitalize="none"
+          error={errors.email?.message}
+          {...register('email')}
+        />
         <Input
           label="Password"
           type="password"
@@ -70,9 +78,9 @@ export function RegisterForm() {
         </Button>
       </form>
 
-      <p className="mt-6 text-sm text-ink-soft">
+      <p className="mt-5 text-[15px] text-ink-soft">
         Already registered?{' '}
-        <Link href="/login" className="font-semibold text-jeep-blue underline underline-offset-2">
+        <Link href="/login" className="inline-flex min-h-11 items-center font-bold text-brand underline underline-offset-2">
           Sign in
         </Link>
       </p>

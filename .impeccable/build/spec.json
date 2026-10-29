@@ -1,0 +1,720 @@
+{
+  "tool": "comp-spec",
+  "version": 1,
+  "createdAt": "2026-10-29T07:13:20.494Z",
+  "comp": ".impeccable/mocks/plan-comp-b.png",
+  "warnings": [
+    "region route-strip: \"codeDrawn\": true set in the regions file (the painted-material refusal is overridden: code draws this region)"
+  ],
+  "uncoveredInkCells": [],
+  "compSize": {
+    "width": 390,
+    "height": 844
+  },
+  "aspect": 0.4621,
+  "orientation": "portrait",
+  "palette": [
+    {
+      "hex": "#f5f7f5",
+      "coverage": 0.9188
+    },
+    {
+      "hex": "#087848",
+      "coverage": 0.0667
+    },
+    {
+      "hex": "#181818",
+      "coverage": 0.0106
+    },
+    {
+      "hex": "#f8b828",
+      "coverage": 0.0025
+    },
+    {
+      "hex": "#f8f0c9",
+      "coverage": 0.0014
+    }
+  ],
+  "bands": [
+    {
+      "y": 0.13,
+      "strength": 0.4281
+    },
+    {
+      "y": 0.1986,
+      "strength": 0.5325
+    },
+    {
+      "y": 0.2527,
+      "strength": 0.4283
+    },
+    {
+      "y": 0.3032,
+      "strength": 0.2083
+    },
+    {
+      "y": 0.3357,
+      "strength": 0.3791
+    },
+    {
+      "y": 0.4224,
+      "strength": 0.8323
+    },
+    {
+      "y": 0.4549,
+      "strength": 0.3255
+    },
+    {
+      "y": 0.4765,
+      "strength": 0.3411
+    },
+    {
+      "y": 0.5271,
+      "strength": 1
+    },
+    {
+      "y": 0.5632,
+      "strength": 0.3774
+    },
+    {
+      "y": 0.5848,
+      "strength": 0.3028
+    },
+    {
+      "y": 0.6715,
+      "strength": 0.4065
+    },
+    {
+      "y": 0.6931,
+      "strength": 0.321
+    },
+    {
+      "y": 0.8267,
+      "strength": 1
+    },
+    {
+      "y": 0.8664,
+      "strength": 0.5294
+    },
+    {
+      "y": 0.8917,
+      "strength": 1
+    }
+  ],
+  "regions": [
+    {
+      "id": "status-bar",
+      "kind": "chrome",
+      "note": "device status bar, mock only",
+      "grid": null,
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1,
+        "h": 0.0474
+      },
+      "px": {
+        "x": 0,
+        "y": 0,
+        "w": 390,
+        "h": 40
+      },
+      "aspect": 9.75,
+      "palette": [
+        {
+          "hex": "#f8f8f8",
+          "coverage": 0.9812
+        },
+        {
+          "hex": "#181819",
+          "coverage": 0.0116
+        },
+        {
+          "hex": "#b8f8f8",
+          "coverage": 0.0028
+        },
+        {
+          "hex": "#3898e8",
+          "coverage": 0.0022
+        },
+        {
+          "hex": "#681818",
+          "coverage": 0.0022
+        }
+      ],
+      "detail": {
+        "energy": 9.0392
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null
+    },
+    {
+      "id": "wordmark",
+      "kind": "text",
+      "note": "ParaPo wordmark",
+      "grid": null,
+      "box": {
+        "x": 0.0359,
+        "y": 0.0498,
+        "w": 0.2564,
+        "h": 0.0474
+      },
+      "px": {
+        "x": 14,
+        "y": 42,
+        "w": 100,
+        "h": 40
+      },
+      "aspect": 2.5,
+      "palette": [
+        {
+          "hex": "#f8f8f8",
+          "coverage": 0.9352
+        },
+        {
+          "hex": "#087848",
+          "coverage": 0.0194
+        },
+        {
+          "hex": "#98c8f8",
+          "coverage": 0.0194
+        },
+        {
+          "hex": "#58586c",
+          "coverage": 0.0194
+        },
+        {
+          "hex": "#587dad",
+          "coverage": 0.0065
+        }
+      ],
+      "detail": {
+        "energy": 9.0822
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "type": {
+        "comp": {
+          "lines": 1,
+          "glyphs": 6,
+          "capHeightPx": 12.3,
+          "inkIsDark": true,
+          "allCaps": false,
+          "advance": 0.6767,
+          "advTall": 0.7308,
+          "advX": 0.6225,
+          "gap": 0.0541,
+          "xRatio": 0.7462,
+          "stemW": 0.209,
+          "contrast": 1.1102,
+          "serif": null,
+          "densTall": 0.5833,
+          "densX": 0.6834,
+          "weight": 0.5833
+        },
+        "widthClass": "normal",
+        "weightClass": "bold"
+      }
+    },
+    {
+      "id": "title",
+      "kind": "text",
+      "note": "Where to?",
+      "grid": null,
+      "box": {
+        "x": 0.0359,
+        "y": 0.0972,
+        "w": 0.6667,
+        "h": 0.0592
+      },
+      "px": {
+        "x": 14,
+        "y": 82,
+        "w": 260,
+        "h": 50
+      },
+      "aspect": 5.2,
+      "palette": [
+        {
+          "hex": "#f8f8f8",
+          "coverage": 0.9047
+        },
+        {
+          "hex": "#181818",
+          "coverage": 0.0734
+        },
+        {
+          "hex": "#f8d798",
+          "coverage": 0.0092
+        },
+        {
+          "hex": "#f8f6b8",
+          "coverage": 0.0071
+        },
+        {
+          "hex": "#1c6cb6",
+          "coverage": 0.0056
+        }
+      ],
+      "detail": {
+        "energy": 30.4602
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "type": {
+        "comp": {
+          "lines": 1,
+          "glyphs": 8,
+          "capHeightPx": 21.7,
+          "inkIsDark": true,
+          "allCaps": false,
+          "advance": 0.7136,
+          "advTall": 0.633,
+          "advX": 0.7251,
+          "gap": 0.1381,
+          "xRatio": 0.7344,
+          "stemW": 0.2021,
+          "contrast": 1.1155,
+          "serif": 1,
+          "densTall": 0.5288,
+          "densX": 0.615,
+          "weight": 0.5288
+        },
+        "widthClass": "wide",
+        "weightClass": "medium",
+        "chosen": {
+          "family": "Manrope",
+          "weight": 700,
+          "fontSizePx": 30,
+          "source": "index",
+          "fp": {
+            "lines": 1,
+            "glyphs": 8,
+            "capHeightPx": 21.7,
+            "inkIsDark": true,
+            "allCaps": false,
+            "advance": 0.7259,
+            "advTall": 0.6222,
+            "advX": 0.7374,
+            "gap": 0.1383,
+            "xRatio": 0.7338,
+            "stemW": 0.182,
+            "contrast": 1.1022,
+            "serif": 1,
+            "densTall": 0.4832,
+            "densX": 0.5711,
+            "weight": 0.4832
+          },
+          "stamp": "ba7112ba3a0f"
+        }
+      }
+    },
+    {
+      "id": "route-stack",
+      "kind": "control",
+      "note": "From/To fields with dotted connector",
+      "grid": null,
+      "box": {
+        "x": 0.0513,
+        "y": 0.1576,
+        "w": 0.8974,
+        "h": 0.1066
+      },
+      "px": {
+        "x": 20,
+        "y": 133,
+        "w": 350,
+        "h": 90
+      },
+      "aspect": 3.8889,
+      "palette": [
+        {
+          "hex": "#f8f8f8",
+          "coverage": 0.9765
+        },
+        {
+          "hex": "#1a1818",
+          "coverage": 0.0116
+        },
+        {
+          "hex": "#91d6f8",
+          "coverage": 0.0045
+        },
+        {
+          "hex": "#f6d294",
+          "coverage": 0.0039
+        },
+        {
+          "hex": "#989f9f",
+          "coverage": 0.0036
+        }
+      ],
+      "detail": {
+        "energy": 21.0247
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null
+    },
+    {
+      "id": "route-strip",
+      "kind": "control",
+      "note": "route line computed from the live route geometry, distance, View route",
+      "grid": null,
+      "codeDrawn": true,
+      "box": {
+        "x": 0.0513,
+        "y": 0.2903,
+        "w": 0.8974,
+        "h": 0.077
+      },
+      "px": {
+        "x": 20,
+        "y": 245,
+        "w": 350,
+        "h": 65
+      },
+      "aspect": 5.3846,
+      "palette": [
+        {
+          "hex": "#e9e9e9",
+          "coverage": 0.9423
+        },
+        {
+          "hex": "#0b7848",
+          "coverage": 0.0395
+        },
+        {
+          "hex": "#88bea0",
+          "coverage": 0.0063
+        },
+        {
+          "hex": "#379174",
+          "coverage": 0.0063
+        },
+        {
+          "hex": "#c0d5d2",
+          "coverage": 0.0055
+        }
+      ],
+      "detail": {
+        "energy": 16.5577
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null
+    },
+    {
+      "id": "ride-heading",
+      "kind": "text",
+      "note": "Choose a ride + discount note",
+      "grid": null,
+      "box": {
+        "x": 0.0513,
+        "y": 0.3886,
+        "w": 0.8974,
+        "h": 0.0284
+      },
+      "px": {
+        "x": 20,
+        "y": 328,
+        "w": 350,
+        "h": 24
+      },
+      "aspect": 14.5833,
+      "palette": [
+        {
+          "hex": "#f8f8f8",
+          "coverage": 0.9412
+        },
+        {
+          "hex": "#191919",
+          "coverage": 0.0311
+        },
+        {
+          "hex": "#eca555",
+          "coverage": 0.0127
+        },
+        {
+          "hex": "#187a4f",
+          "coverage": 0.0081
+        },
+        {
+          "hex": "#4375bd",
+          "coverage": 0.0069
+        }
+      ],
+      "detail": {
+        "energy": 38.5356
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null,
+      "type": {
+        "comp": {
+          "lines": 1,
+          "glyphs": 23,
+          "capHeightPx": 11.4,
+          "inkIsDark": true,
+          "allCaps": false,
+          "advance": 0.7315,
+          "advTall": 0.7169,
+          "advX": 0.7315,
+          "gap": 0.117,
+          "xRatio": 0.746,
+          "stemW": 0.2183,
+          "contrast": 1.1676,
+          "serif": 0.1705,
+          "densTall": 0.6076,
+          "densX": 0.7267,
+          "weight": 0.6076
+        },
+        "widthClass": "wide",
+        "weightClass": "bold"
+      }
+    },
+    {
+      "id": "vehicle-row-1",
+      "kind": "control",
+      "note": "jeepney radio row: line icon, name, price over struck regular fare",
+      "grid": null,
+      "box": {
+        "x": 0.0308,
+        "y": 0.4242,
+        "w": 0.9385,
+        "h": 0.1066
+      },
+      "px": {
+        "x": 12,
+        "y": 358,
+        "w": 366,
+        "h": 90
+      },
+      "aspect": 4.0667,
+      "palette": [
+        {
+          "hex": "#e9f8e9",
+          "coverage": 0.863
+        },
+        {
+          "hex": "#097849",
+          "coverage": 0.0757
+        },
+        {
+          "hex": "#f8b727",
+          "coverage": 0.0292
+        },
+        {
+          "hex": "#181819",
+          "coverage": 0.0195
+        },
+        {
+          "hex": "#66676e",
+          "coverage": 0.0127
+        }
+      ],
+      "detail": {
+        "energy": 35.1069
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null
+    },
+    {
+      "id": "vehicle-row-2",
+      "kind": "control",
+      "note": "modern jeepney radio row: line icon, name, price over struck regular fare",
+      "grid": null,
+      "box": {
+        "x": 0.0308,
+        "y": 0.5355,
+        "w": 0.9385,
+        "h": 0.1066
+      },
+      "px": {
+        "x": 12,
+        "y": 452,
+        "w": 366,
+        "h": 90
+      },
+      "aspect": 4.0667,
+      "palette": [
+        {
+          "hex": "#f8f8f8",
+          "coverage": 0.9597
+        },
+        {
+          "hex": "#181819",
+          "coverage": 0.0217
+        },
+        {
+          "hex": "#f6eab2",
+          "coverage": 0.008
+        },
+        {
+          "hex": "#f6f5de",
+          "coverage": 0.0057
+        },
+        {
+          "hex": "#75b7f2",
+          "coverage": 0.0049
+        }
+      ],
+      "detail": {
+        "energy": 24.6246
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null
+    },
+    {
+      "id": "vehicle-row-3",
+      "kind": "control",
+      "note": "UV Express radio row: line icon, name, price over struck regular fare",
+      "grid": null,
+      "box": {
+        "x": 0.0308,
+        "y": 0.6469,
+        "w": 0.9385,
+        "h": 0.1066
+      },
+      "px": {
+        "x": 12,
+        "y": 546,
+        "w": 366,
+        "h": 90
+      },
+      "aspect": 4.0667,
+      "palette": [
+        {
+          "hex": "#f8f8f8",
+          "coverage": 0.9643
+        },
+        {
+          "hex": "#181818",
+          "coverage": 0.0203
+        },
+        {
+          "hex": "#c6f6f8",
+          "coverage": 0.0057
+        },
+        {
+          "hex": "#f8e4ad",
+          "coverage": 0.0049
+        },
+        {
+          "hex": "#aeaba6",
+          "coverage": 0.0049
+        }
+      ],
+      "detail": {
+        "energy": 23.6107
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null
+    },
+    {
+      "id": "log-button",
+      "kind": "control",
+      "note": "pinned Log this trip button",
+      "grid": null,
+      "box": {
+        "x": 0.041,
+        "y": 0.8258,
+        "w": 0.9179,
+        "h": 0.0652
+      },
+      "px": {
+        "x": 16,
+        "y": 697,
+        "w": 358,
+        "h": 55
+      },
+      "aspect": 6.5091,
+      "palette": [
+        {
+          "hex": "#087848",
+          "coverage": 0.9493
+        },
+        {
+          "hex": "#f5f8f7",
+          "coverage": 0.0349
+        },
+        {
+          "hex": "#add0c5",
+          "coverage": 0.0054
+        },
+        {
+          "hex": "#5da783",
+          "coverage": 0.0054
+        },
+        {
+          "hex": "#8ce2f8",
+          "coverage": 0.005
+        }
+      ],
+      "detail": {
+        "energy": 16.5717
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null
+    },
+    {
+      "id": "tab-bar",
+      "kind": "chrome",
+      "note": "bottom tabs",
+      "grid": null,
+      "box": {
+        "x": 0,
+        "y": 0.9064,
+        "w": 1,
+        "h": 0.0936
+      },
+      "px": {
+        "x": 0,
+        "y": 765,
+        "w": 390,
+        "h": 79
+      },
+      "aspect": 4.9367,
+      "palette": [
+        {
+          "hex": "#f8f8f8",
+          "coverage": 0.9931
+        },
+        {
+          "hex": "#f8c891",
+          "coverage": 0.002
+        },
+        {
+          "hex": "#586676",
+          "coverage": 0.002
+        },
+        {
+          "hex": "#f8e8b3",
+          "coverage": 0.0017
+        },
+        {
+          "hex": "#989898",
+          "coverage": 0.0012
+        }
+      ],
+      "detail": {
+        "energy": 5.3938
+      },
+      "medium": "semantic",
+      "plate": null,
+      "text": null
+    }
+  ],
+  "compSha256": "a3b99c603870362384fc487c4574a5a0f075743ab0d841003c3495c02f38b94b",
+  "regionsSource": {
+    "path": ".impeccable/build/regions.json",
+    "sha256": "72b2aa7a1c6a2cfc13265746aa3aacf5da6f092fae3628c7dfcfa9cb5b144840"
+  }
+}

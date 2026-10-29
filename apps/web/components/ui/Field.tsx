@@ -3,10 +3,10 @@ import { cn } from '@/lib/cn';
 
 export const controlClass = (invalid?: boolean) =>
   cn(
-    'block w-full min-h-11 rounded-lg border bg-white px-3 py-2 text-base text-ink placeholder:text-ink-faint',
-    'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-jeep-blue',
-    'disabled:bg-paper disabled:text-ink-faint',
-    invalid ? 'border-jeep-red' : 'border-stone-400',
+    'block w-full min-h-12 rounded-[14px] border-2 bg-surface px-4 py-2.5 text-base font-semibold text-ink placeholder:font-medium',
+    'transition-colors focus:bg-white focus-visible:outline-none focus-visible:border-brand',
+    'disabled:text-ink-faint',
+    invalid ? 'border-danger bg-danger-50' : 'border-transparent',
   );
 
 interface FieldProps {
@@ -22,17 +22,17 @@ interface FieldProps {
 export function Field({ id, label, error, hint, className, children }: FieldProps) {
   return (
     <div className={cn('space-y-1.5', className)}>
-      <label htmlFor={id} className="block text-sm font-semibold text-ink">
+      <label htmlFor={id} className="block text-sm font-bold text-ink">
         {label}
       </label>
       {children}
       {hint && !error && (
-        <p id={`${id}-hint`} className="text-xs text-ink-soft">
+        <p id={`${id}-hint`} className="text-[13px] text-ink-soft">
           {hint}
         </p>
       )}
       {error && (
-        <p id={`${id}-error`} role="alert" className="text-sm font-medium text-jeep-red-dark">
+        <p id={`${id}-error`} role="alert" className="text-sm font-semibold text-danger">
           {error}
         </p>
       )}

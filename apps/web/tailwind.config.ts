@@ -2,24 +2,26 @@ import type { Config } from 'tailwindcss';
 
 const config: Config = {
   content: ['./app/**/*.{ts,tsx}', './components/**/*.{ts,tsx}', './features/**/*.{ts,tsx}'],
+  // Hover styles only apply where the device can really hover, so taps never leave a sticky hover.
+  future: { hoverOnlyWhenSupported: true },
   theme: {
     extend: {
       colors: {
-        // Jeepney livery: sun yellow, signal red, route blue on warm neutrals.
-        jeep: {
-          yellow: { DEFAULT: '#FFC20E', dark: '#E5AA00', soft: '#FFF4CC' },
-          red: { DEFAULT: '#C8102E', dark: '#9E0C24', soft: '#FDE8EB' },
-          blue: { DEFAULT: '#1D4E89', dark: '#143A68', soft: '#E4EDF8' },
-        },
-        ink: { DEFAULT: '#14171F', soft: '#4B5160', faint: '#6B7280' },
-        paper: { DEFAULT: '#F7F5F0', card: '#FFFFFF', line: '#E4E0D6' },
+        ink: { DEFAULT: '#15181C', soft: '#545B66', faint: '#5F6670' },
+        line: '#E6E8E7',
+        surface: { DEFAULT: '#F2F4F3', deep: '#E8ECEA' },
+        // Brand green: #08744C clears 4.5:1 on white and on its own tint.
+        brand: { DEFAULT: '#08744C', dark: '#065C3C', 50: '#E7F4EE' },
+        // Amber is reserved for the "Cheapest" tag and live state.
+        signal: { DEFAULT: '#FFB020', ink: '#3A2A00' },
+        danger: { DEFAULT: '#B42318', 50: '#FDECEA' },
+        mapbg: '#E9EEE9',
       },
       fontFamily: {
-        display: ['"Trebuchet MS"', 'ui-rounded', 'system-ui', 'sans-serif'],
-        sans: ['system-ui', '-apple-system', '"Segoe UI"', 'Roboto', 'sans-serif'],
+        sans: ['var(--font-manrope)', 'system-ui', '-apple-system', '"Segoe UI"', 'Roboto', 'sans-serif'],
       },
       boxShadow: {
-        card: '0 1px 0 rgba(20,23,31,0.04), 0 8px 24px -12px rgba(20,23,31,0.18)',
+        pop: '0 8px 24px -6px rgba(21,24,28,0.18), 0 2px 6px rgba(21,24,28,0.06)',
       },
     },
   },

@@ -15,13 +15,19 @@ export interface TripMapProps {
 // Manila as the default view.
 const DEFAULT_CENTER: [number, number] = [14.5995, 120.9842];
 
-const pin = (color: string, letter: string) =>
-  L.divIcon({
-    className: '',
-    html: `<div style="background:${color};color:#fff;width:28px;height:28px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:2px solid #14171f;display:flex;align-items:center;justify-content:center;"><span style="transform:rotate(45deg);font:700 12px system-ui">${letter}</span></div>`,
-    iconSize: [28, 28],
-    iconAnchor: [14, 28],
-  });
+// Same marks as the From/To stack: a ringed dot for the pickup, an ink square for the drop-off.
+const originIcon = L.divIcon({
+  className: '',
+  html: '<div style="width:20px;height:20px;border-radius:50%;background:#fff;border:4px solid #08744C;box-shadow:0 1px 4px rgba(21,24,28,.35)"></div>',
+  iconSize: [20, 20],
+  iconAnchor: [10, 10],
+});
+const destIcon = L.divIcon({
+  className: '',
+  html: '<div style="width:20px;height:20px;border-radius:5px;background:#15181C;border:3px solid #fff;box-shadow:0 1px 4px rgba(21,24,28,.35)"></div>',
+  iconSize: [20, 20],
+  iconAnchor: [10, 10],
+});
 
 function FitBounds({ points }: { points: [number, number][] }) {
   const map = useMap();
@@ -34,20 +40,39 @@ function FitBounds({ points }: { points: [number, number][] }) {
   return null;
 }
 
+/** The container can open, close or resize after Leaflet measured it (the phone map expands). Re-measure. */
+function InvalidateOnResize() {
+  const map = useMap();
+  useEffect(() => {
+    const el = map.getContainer();
+    if (typeof ResizeObserver === 'undefined') return;
+    const ro = new ResizeObserver(() => map.invalidateSize());
+    ro.observe(el);
+    // The phone panel expands with a ~300ms transition; measure again once it has settled.
+    const timers = [60, 350].map((ms) => window.setTimeout(() => map.invalidateSize(), ms));
+    return () => {
+      ro.disconnect();
+      timers.forEach(window.clearTimeout);
+    };
+  }, [map]);
+  return null;
+}
+
 export default function TripMap({ origin, destination, geometry }: TripMapProps) {
-  const points: [number, number][] =
-    geometry && geometry.length > 1
-      ? geometry
-      : ([origin && [origin.lat, origin.lng], destination && [destination.lat, destination.lng]].filter(Boolean) as [
-          number,
-          number,
-        ][]);
+  const hasRoute = !!geometry && geometry.length > 1;
+  const points: [number, number][] = hasRoute
+    ? geometry
+    : ([origin && [origin.lat, origin.lng], destination && [destination.lat, destination.lng]].filter(Boolean) as [
+        number,
+        number,
+      ][]);
+  const routeKey = hasRoute ? `${geometry.length}:${geometry[0].join(',')}:${geometry[geometry.length - 1].join(',')}` : 'none';
 
   return (
     <MapContainer
       center={DEFAULT_CENTER}
       zoom={11}
-      scrollWheelZoom={false}
+      scrollWheelZoom
       className="h-full w-full"
       aria-label="Map of your trip"
     >
@@ -56,17 +81,29 @@ export default function TripMap({ origin, destination, geometry }: TripMapProps)
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       {origin && (
-        <Marker position={[origin.lat, origin.lng]} icon={pin('#1D4E89', 'A')}>
+        <Marker position={[origin.lat, origin.lng]} icon={originIcon}>
           <Tooltip>{origin.label}</Tooltip>
         </Marker>
       )}
       {destination && (
-        <Marker position={[destination.lat, destination.lng]} icon={pin('#C8102E', 'B')}>
+        <Marker position={[destination.lat, destination.lng]} icon={destIcon}>
           <Tooltip>{destination.label}</Tooltip>
         </Marker>
       )}
-      {geometry && geometry.length > 1 && <Polyline positions={geometry} pathOptions={{ color: '#1D4E89', weight: 5, opacity: 0.85 }} />}
+      {hasRoute && (
+        <Polyline
+          // A new route is a new element, so the line draws itself again.
+          key={routeKey}
+          positions={geometry}
+          pathOptions={{ color: '#08744C', weight: 6, opacity: 1, lineCap: 'round', lineJoin: 'round', className: 'route-line' }}
+          eventHandlers={{
+            // pathLength=1 lets the CSS draw animation run along the real path without measuring it.
+            add: (e) => (e.target as L.Polyline).getElement()?.setAttribute('pathLength', '1'),
+          }}
+        />
+      )}
       <FitBounds points={points} />
+      <InvalidateOnResize />
     </MapContainer>
   );
 }

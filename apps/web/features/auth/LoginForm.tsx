@@ -41,21 +41,29 @@ export function LoginForm() {
 
   return (
     <div>
-      <h1 className="font-display text-3xl font-extrabold text-ink">Welcome back</h1>
-      <p className="mt-1 text-ink-soft">Sign in to plan your next ride.</p>
+      <h1 className="text-[28px] font-extrabold leading-tight tracking-[-0.02em] text-ink">Welcome back</h1>
+      <p className="mt-1 text-[15px] text-ink-soft">Sign in to plan your next ride.</p>
 
       <form onSubmit={onSubmit} noValidate className="mt-6 space-y-4">
         {params.get('reason') === 'expired' && !serverError && (
-          <p role="status" className="rounded-lg border border-jeep-yellow-dark/50 bg-jeep-yellow-soft px-3 py-2 text-sm font-medium text-[#6B4F00]">
+          <p role="status" className="rounded-[14px] bg-surface px-4 py-3 text-sm font-semibold text-ink">
             Your session has expired. Please sign in again.
           </p>
         )}
         {serverError && (
-          <p role="alert" className="rounded-lg border border-jeep-red/30 bg-jeep-red-soft px-3 py-2 text-sm font-medium text-jeep-red-dark">
+          <p role="alert" className="rounded-[14px] bg-danger-50 px-4 py-3 text-sm font-semibold text-danger">
             {serverError}
           </p>
         )}
-        <Input label="Email" type="email" autoComplete="email" error={errors.email?.message} {...register('email')} />
+        <Input
+          label="Email"
+          type="email"
+          inputMode="email"
+          autoComplete="email"
+          autoCapitalize="none"
+          error={errors.email?.message}
+          {...register('email')}
+        />
         <Input
           label="Password"
           type="password"
@@ -68,29 +76,29 @@ export function LoginForm() {
         </Button>
       </form>
 
-      <p className="mt-6 text-sm text-ink-soft">
+      <p className="mt-5 text-[15px] text-ink-soft">
         New here?{' '}
-        <Link href="/register" className="font-semibold text-jeep-blue underline underline-offset-2">
+        <Link href="/register" className="inline-flex min-h-11 items-center font-bold text-brand underline underline-offset-2">
           Create an account
         </Link>
       </p>
 
-      <aside aria-labelledby="demo-heading" className="mt-8 rounded-xl border border-dashed border-stone-400 bg-white/70 p-4">
-        <h2 id="demo-heading" className="text-xs font-bold uppercase tracking-wide text-ink-soft">
+      <aside aria-labelledby="demo-heading" className="mt-6 border-t border-line pt-5">
+        <h2 id="demo-heading" className="text-sm font-extrabold text-ink">
           Demo accounts
         </h2>
-        <ul className="mt-2 space-y-2">
+        <ul className="mt-2 divide-y divide-line">
           {DEMO_ACCOUNTS.map((a) => (
-            <li key={a.email} className="flex items-center justify-between gap-2 text-sm">
-              <span>
-                <span className="block font-semibold">{a.role}</span>
-                <span className="text-ink-soft">
+            <li key={a.email} className="flex items-center justify-between gap-3 py-2 text-sm">
+              <span className="min-w-0">
+                <span className="block font-bold text-ink">{a.role}</span>
+                <span className="block truncate text-ink-soft">
                   {a.email} / {a.password}
                 </span>
               </span>
               <Button
                 size="sm"
-                variant="ghost"
+                variant="secondary"
                 aria-label={`Fill in ${a.role} credentials`}
                 onClick={() => {
                   setValue('email', a.email, { shouldValidate: true });

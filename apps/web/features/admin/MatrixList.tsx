@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Button, Card, ConfirmDialog, EmptyState, PageLoader } from '@/components/ui';
+import { VehicleIcon } from '@/components/icons';
+import { Button, ConfirmDialog, PageLoader, buttonClass } from '@/components/ui';
 import { ErrorState } from '@/components/ui/EmptyState';
 import { toast } from '@/components/ui/Toast';
 import { matricesApi } from '@/lib/api/endpoints';
@@ -46,34 +47,33 @@ export function MatrixList() {
   if (error) return <ErrorState message={errorMessage(error)} onRetry={() => refetch()} />;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {VEHICLE_TYPES.map((vt) => {
         const items = data.filter((m) => m.vehicleType === vt);
         return (
-          <Card key={vt} title={VEHICLE_LABELS[vt]} accent="blue" aria-label={VEHICLE_LABELS[vt]}>
+          <section key={vt} aria-label={VEHICLE_LABELS[vt]}>
+            <h2 className="flex items-center gap-2.5 border-b border-line pb-2 text-lg font-extrabold text-ink">
+              <VehicleIcon type={vt} size={28} className="text-ink-soft" />
+              {VEHICLE_LABELS[vt]}
+            </h2>
             {items.length === 0 ? (
-              <EmptyState icon="📋" title="No matrices yet" description="Create a draft to get started." />
+              <p className="py-5 text-[15px] text-ink-soft">No matrices yet. Create a draft to get started.</p>
             ) : (
-              <ul className="divide-y divide-paper-line">
+              <ul className="divide-y divide-line">
                 {items.map((m) => (
-                  <li key={m.id} className="flex flex-wrap items-center justify-between gap-3 py-3">
-                    <div className="min-w-0">
-                      <p className="flex flex-wrap items-center gap-2 font-semibold">
-                        <StatusBadge status={m.status} />
-                        <span>
-                          {formatPeso(m.baseFare)} first {m.baseKm} km + {formatPeso(m.perKmRate)}/km
-                        </span>
+                  <li key={m.id} className="py-4">
+                    <div className="flex items-start justify-between gap-3">
+                      <p className="min-w-0 text-base font-bold text-ink">
+                        {formatPeso(m.baseFare)} first {m.baseKm} km + {formatPeso(m.perKmRate)}/km
                       </p>
-                      <p className="mt-1 text-sm text-ink-soft">
-                        {m.discountPercent}% discount &middot; effective {formatDate(m.effectiveDate)}
-                        {m.publishedAt && <> &middot; published {formatDate(m.publishedAt)}</>}
-                      </p>
+                      <StatusBadge status={m.status} />
                     </div>
-                    <div className="flex gap-2">
-                      <Link
-                        href={`/admin/fare-matrices/${m.id}`}
-                        className="inline-flex min-h-9 items-center rounded-lg border border-paper-line px-3 text-sm font-semibold hover:bg-ink/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-jeep-blue"
-                      >
+                    <p className="mt-1 text-sm text-ink-soft">
+                      {m.discountPercent}% discount &middot; effective <span className="whitespace-nowrap">{formatDate(m.effectiveDate)}</span>
+                      {m.publishedAt && <> &middot; published <span className="whitespace-nowrap">{formatDate(m.publishedAt)}</span></>}
+                    </p>
+                    <div className="mt-3 flex flex-wrap items-center gap-2">
+                      <Link href={`/admin/fare-matrices/${m.id}`} className={buttonClass({ variant: 'secondary', size: 'sm' })}>
                         {m.status === 'DRAFT' ? 'Edit' : 'View'}
                       </Link>
                       {m.status === 'DRAFT' && (
@@ -81,7 +81,13 @@ export function MatrixList() {
                           <Button size="sm" onClick={() => setAction({ kind: 'publish', matrix: m })}>
                             Publish
                           </Button>
-                          <Button size="sm" variant="ghost" onClick={() => setAction({ kind: 'delete', matrix: m })}>
+                          {/* Destructive action sits apart from Publish, far edge, quiet until pressed. */}
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="ml-auto text-danger"
+                            onClick={() => setAction({ kind: 'delete', matrix: m })}
+                          >
                             Delete
                           </Button>
                         </>
@@ -91,7 +97,7 @@ export function MatrixList() {
                 ))}
               </ul>
             )}
-          </Card>
+          </section>
         );
       })}
 

@@ -1,3 +1,4 @@
+import { ChevronDownIcon } from '@/components/icons';
 import { computeFare } from '@/lib/fare';
 import { formatPeso } from '@/lib/format';
 import type { FareMatrix } from '@/lib/api/types';
@@ -7,36 +8,40 @@ interface FareTableProps {
   maxKm?: number;
 }
 
-/** Display-only table of fares for 1..maxKm, computed client-side with the contract formula. */
+/** Reference only, behind a disclosure: fares for 1..maxKm, computed client-side with the contract formula. */
 export function FareTable({ matrix, maxKm = 20 }: FareTableProps) {
   const rows = Array.from({ length: maxKm }, (_, i) => i + 1);
   return (
-    <div className="overflow-x-auto rounded-xl border border-paper-line bg-white">
-      <table className="w-full text-sm">
+    <details className="group">
+      <summary className="press flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 text-[15px] font-bold text-ink [&::-webkit-details-marker]:hidden">
+        See all distances
+        <ChevronDownIcon size={20} className="shrink-0 text-ink-soft transition-transform duration-200 group-open:rotate-180" />
+      </summary>
+      <table className="w-full text-[15px]">
         <caption className="sr-only">Fares for 1 to {maxKm} kilometres</caption>
-        <thead className="bg-ink text-left text-white">
-          <tr>
-            <th scope="col" className="px-4 py-2.5 font-semibold">Distance</th>
-            <th scope="col" className="px-4 py-2.5 text-right font-semibold">Regular</th>
-            <th scope="col" className="px-4 py-2.5 text-right font-semibold">
-              Student / Senior / PWD ({matrix.discountPercent}% off)
+        <thead>
+          <tr className="border-b border-line text-left text-[13px] text-ink-soft">
+            <th scope="col" className="py-2 font-semibold">Distance</th>
+            <th scope="col" className="py-2 text-right font-semibold">Regular</th>
+            <th scope="col" className="py-2 text-right font-semibold">
+              {matrix.discountPercent}% off
             </th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-paper-line">
+        <tbody className="divide-y divide-line">
           {rows.map((km) => {
             const reg = computeFare(matrix, km, 'REGULAR');
             const disc = computeFare(matrix, km, 'STUDENT');
             return (
-              <tr key={km} className="odd:bg-stone-50/60">
-                <th scope="row" className="px-4 py-2 text-left font-medium">{km} km</th>
-                <td className="px-4 py-2 text-right tabular-nums">{formatPeso(reg.fare)}</td>
-                <td className="px-4 py-2 text-right font-semibold tabular-nums text-jeep-blue-dark">{formatPeso(disc.fare)}</td>
+              <tr key={km}>
+                <th scope="row" className="py-2.5 text-left font-semibold">{km} km</th>
+                <td className="py-2.5 text-right">{formatPeso(reg.fare)}</td>
+                <td className="py-2.5 text-right font-bold text-brand-dark">{formatPeso(disc.fare)}</td>
               </tr>
             );
           })}
         </tbody>
       </table>
-    </div>
+    </details>
   );
 }

@@ -7,7 +7,7 @@ export const metadata: Metadata = { title: 'Analytics' };
 export default function AnalyticsPage() {
   return (
     <>
-      <PageHeader title="Analytics" description="Page views for the last 14 days. No IPs or third-party trackers." />
+      <PageHeader title="Page views" description="No IPs or third-party trackers." />
       <AnalyticsCharts />
     </>
   );

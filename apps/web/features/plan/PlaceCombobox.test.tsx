@@ -30,7 +30,8 @@ describe('PlaceCombobox', () => {
 
     await user.click(await screen.findByRole('option', { name: 'Lawton, Manila' }));
     expect(onChange).toHaveBeenCalledWith(lawton);
-    expect(input).toHaveValue('Lawton, Manila');
+    // Once chosen the field shows the short name; onChange above carries the full place.
+    expect(input).toHaveValue('Lawton');
   });
 
   it('shows a friendly message when search is unavailable (503)', async () => {

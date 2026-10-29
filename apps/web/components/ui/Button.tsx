@@ -12,16 +12,32 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variants: Record<ButtonVariant, string> = {
-  primary: 'bg-jeep-yellow text-ink hover:bg-jeep-yellow-dark shadow-[0_2px_0_0_rgba(20,23,31,0.9)] active:translate-y-px active:shadow-none',
-  secondary: 'bg-jeep-blue text-white hover:bg-jeep-blue-dark',
-  danger: 'bg-jeep-red text-white hover:bg-jeep-red-dark',
-  ghost: 'bg-transparent text-ink hover:bg-ink/5 border border-paper-line',
+  primary: 'bg-brand text-white hover:bg-brand-dark disabled:bg-surface-deep disabled:text-ink-faint',
+  secondary: 'bg-surface text-ink hover:bg-surface-deep disabled:text-ink-faint',
+  danger: 'bg-danger text-white hover:brightness-95 disabled:bg-surface-deep disabled:text-ink-faint',
+  // Ghost is a quiet text action: no fill until it is touched.
+  ghost: 'bg-transparent text-ink hover:bg-surface disabled:text-ink-faint',
 };
+// Every size keeps a 44px minimum hit area.
 const sizes: Record<ButtonSize, string> = {
-  sm: 'min-h-9 px-3 text-sm',
-  md: 'min-h-11 px-4 text-sm',
-  lg: 'min-h-12 px-6 text-base',
+  sm: 'min-h-11 px-3.5 text-[15px]',
+  md: 'min-h-12 px-5 text-base',
+  lg: 'min-h-14 px-6 text-[17px]',
 };
+
+/** Class string for anything that should look like a button (links included). */
+export const buttonClass = ({
+  variant = 'primary',
+  size = 'md',
+  className,
+}: { variant?: ButtonVariant; size?: ButtonSize; className?: string } = {}) =>
+  cn(
+    'press inline-flex items-center justify-center gap-2 rounded-[14px] font-bold transition-colors',
+    'disabled:cursor-not-allowed',
+    variants[variant],
+    sizes[size],
+    className,
+  );
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
   { variant = 'primary', size = 'md', loading = false, disabled, className, children, type = 'button', ...rest },
@@ -33,14 +49,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       type={type}
       disabled={disabled || loading}
       aria-busy={loading || undefined}
-      className={cn(
-        'inline-flex items-center justify-center gap-2 rounded-lg font-semibold transition-colors',
-        'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-jeep-blue',
-        'disabled:cursor-not-allowed disabled:opacity-60',
-        variants[variant],
-        sizes[size],
-        className,
-      )}
+      className={buttonClass({ variant, size, className })}
       {...rest}
     >
       {loading && <Spinner label="Working" />}

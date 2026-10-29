@@ -1,0 +1,126 @@
+{
+ "regions": [
+  {
+   "id": "status-bar",
+   "kind": "chrome",
+   "pixelBox": {
+    "x": 0,
+    "y": 0,
+    "w": 390,
+    "h": 40
+   },
+   "note": "device status bar, mock only"
+  },
+  {
+   "id": "wordmark",
+   "kind": "text",
+   "pixelBox": {
+    "x": 14,
+    "y": 42,
+    "w": 100,
+    "h": 40
+   },
+   "note": "ParaPo wordmark"
+  },
+  {
+   "id": "title",
+   "kind": "text",
+   "pixelBox": {
+    "x": 14,
+    "y": 82,
+    "w": 260,
+    "h": 50
+   },
+   "note": "Where to?"
+  },
+  {
+   "id": "route-stack",
+   "kind": "control",
+   "pixelBox": {
+    "x": 20,
+    "y": 133,
+    "w": 350,
+    "h": 90
+   },
+   "note": "From/To fields with dotted connector"
+  },
+  {
+   "id": "route-strip",
+   "kind": "control",
+   "pixelBox": {
+    "x": 20,
+    "y": 245,
+    "w": 350,
+    "h": 65
+   },
+   "note": "route line computed from the live route geometry, distance, View route",
+   "codeDrawn": true
+  },
+  {
+   "id": "ride-heading",
+   "kind": "text",
+   "pixelBox": {
+    "x": 20,
+    "y": 328,
+    "w": 350,
+    "h": 24
+   },
+   "note": "Choose a ride + discount note"
+  },
+  {
+   "id": "vehicle-row-1",
+   "kind": "control",
+   "pixelBox": {
+    "x": 12,
+    "y": 358,
+    "w": 366,
+    "h": 90
+   },
+   "note": "jeepney radio row: line icon, name, price over struck regular fare"
+  },
+  {
+   "id": "vehicle-row-2",
+   "kind": "control",
+   "pixelBox": {
+    "x": 12,
+    "y": 452,
+    "w": 366,
+    "h": 90
+   },
+   "note": "modern jeepney radio row: line icon, name, price over struck regular fare"
+  },
+  {
+   "id": "vehicle-row-3",
+   "kind": "control",
+   "pixelBox": {
+    "x": 12,
+    "y": 546,
+    "w": 366,
+    "h": 90
+   },
+   "note": "UV Express radio row: line icon, name, price over struck regular fare"
+  },
+  {
+   "id": "log-button",
+   "kind": "control",
+   "pixelBox": {
+    "x": 16,
+    "y": 697,
+    "w": 358,
+    "h": 55
+   },
+   "note": "pinned Log this trip button"
+  },
+  {
+   "id": "tab-bar",
+   "kind": "chrome",
+   "pixelBox": {
+    "x": 0,
+    "y": 765,
+    "w": 390,
+    "h": 79
+   },
+   "note": "bottom tabs"
+  }
+ ]
+}

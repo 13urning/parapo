@@ -19,10 +19,10 @@ export function Pagination({ page, pageSize, total, onPageChange, disabled }: Pa
         Showing {from}-{to} of {total} &middot; Page {page} of {totalPages}
       </p>
       <div className="flex gap-2">
-        <Button variant="ghost" size="sm" onClick={() => onPageChange(page - 1)} disabled={disabled || page <= 1}>
+        <Button variant="secondary" size="sm" onClick={() => onPageChange(page - 1)} disabled={disabled || page <= 1}>
           Previous
         </Button>
-        <Button variant="ghost" size="sm" onClick={() => onPageChange(page + 1)} disabled={disabled || page >= totalPages}>
+        <Button variant="secondary" size="sm" onClick={() => onPageChange(page + 1)} disabled={disabled || page >= totalPages}>
           Next
         </Button>
       </div>
