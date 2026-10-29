@@ -10,6 +10,10 @@ user is notified in-app and by browser push notification.
 Built for the Full Stack Developer tech exam with **Next.js 15 · NestJS 11 · PostgreSQL 16
 (Prisma) · Docker Compose**.
 
+![ParaPo demo: login, plan a trip, save it, then an admin publishes a fare update](Docs/parapo-demo.gif)
+
+<sub>30-second walkthrough · [higher-quality MP4](Docs/parapo-demo.mp4) · full screenshots below</sub>
+
 ---
 
 ## Quick start (one command)
@@ -74,6 +78,30 @@ and the UI marks the distance **Estimated**.
 - **Push notifications:** click *Enable push notifications* on the notifications page, then
   publish a fare update as admin and the browser shows a system notification. VAPID keys are
   generated automatically on first start. Push works on `localhost` in Chrome, Edge and Firefox.
+
+---
+
+## Screenshots
+
+### Commuter
+
+| Login | Plan a trip: search |
+|---|---|
+| ![Login with demo accounts](Docs/screenshots/01-login.png) | ![Place search](Docs/screenshots/03-plan-search.png) |
+| **Fare quote with route and student discount** | **My trips** |
+| ![Fare quote](Docs/screenshots/04-plan-fare.png) | ![Trip history](Docs/screenshots/06-trips.png) |
+| **Published fare tables** | **Notification after a fare update** |
+| ![Fare tables](Docs/screenshots/07-fares.png) | ![Notifications](Docs/screenshots/13-commuter-notification.png) |
+
+### Admin
+
+| Fare matrices | New draft |
+|---|---|
+| ![Fare matrices](Docs/screenshots/08-admin-matrices.png) | ![New draft](Docs/screenshots/09-admin-new-draft.png) |
+| **Publish confirmation** | **Published: previous matrix archived** |
+| ![Publish dialog](Docs/screenshots/10-admin-publish-confirm.png) | ![Published](Docs/screenshots/11-admin-published.png) |
+| **Page analytics** | **Mobile** |
+| ![Analytics](Docs/screenshots/12-admin-analytics.png) | <img src="Docs/screenshots/14-mobile-plan.png" alt="Mobile plan screen" width="260"> <img src="Docs/screenshots/15-mobile-trips.png" alt="Mobile trips screen" width="260"> |
 
 ---
 
