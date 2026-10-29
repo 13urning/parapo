@@ -10,9 +10,9 @@ user is notified in-app and by browser push notification.
 Built for the Full Stack Developer tech exam with **Next.js 15 · NestJS 11 · PostgreSQL 16
 (Prisma) · Docker Compose**.
 
-![ParaPo demo: login, plan a trip, save it, then an admin publishes a fare update](Docs/parapo-demo.gif)
+<img src="Docs/parapo-demo.gif" alt="ParaPo demo on a phone: sign in, choose a ride and log the trip, then an admin publishes a fare update and the commuter is alerted" width="320">
 
-<sub>30-second walkthrough · [higher-quality MP4](Docs/parapo-demo.mp4) · full screenshots below</sub>
+<sub>40-second phone walkthrough · [higher-quality MP4](Docs/parapo-demo.mp4) · full screenshots below</sub>
 
 ---
 
@@ -90,8 +90,8 @@ and the UI marks the distance **Estimated**.
 | ![Login with demo accounts](Docs/screenshots/01-login.png) | ![Place search](Docs/screenshots/03-plan-search.png) |
 | **Fare quote with route and student discount** | **My trips** |
 | ![Fare quote](Docs/screenshots/04-plan-fare.png) | ![Trip history](Docs/screenshots/06-trips.png) |
-| **Published fare tables** | **Notification after a fare update** |
-| ![Fare tables](Docs/screenshots/07-fares.png) | ![Notifications](Docs/screenshots/13-commuter-notification.png) |
+| **Fares: try a distance per vehicle** | **Notification after a fare update** |
+| ![Fare calculator](Docs/screenshots/07-fares.png) | ![Notifications](Docs/screenshots/13-commuter-notification.png) |
 
 ### Admin
 
